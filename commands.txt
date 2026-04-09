@@ -22,3 +22,7 @@ uv export --format requirements-txt --group dev > dev-requirements.txt
 
 docker compose exec web python manage.py migrate
 docker compose exec web python manage.py createsuperuser
+
+git remote -v
+git remote remove origin
+git remote add origin https://github.com/lukashenko-work/myshop.git
