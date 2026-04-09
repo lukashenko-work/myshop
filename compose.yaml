@@ -1,0 +1,45 @@
+services:
+  db:
+    container_name: myshop_pgsql
+    env_file:
+      - ./.env
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB} 
+    ports:
+      - "5432:5432"
+    volumes:
+      - myshop_pgdata_volume:/var/lib/postgresql # Persists the data
+    networks:
+      - myshop_backend_network
+
+  web:
+    container_name: myshop_web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      # - static_volume:/app/static
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - db
+    networks:
+      - myshop_backend_network
+
+
+networks:
+  myshop_backend_network:
+    driver: bridge
+
+
+volumes:
+  myshop_pgdata_volume:

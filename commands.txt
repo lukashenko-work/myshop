@@ -1,0 +1,24 @@
+uv init
+uv venv --python 3.11
+
+или
+
+uv init  --python 3.11
+
+uv add django
+uv add django-debug-toolbar
+
+django-admin startproject core .
+
+uv run manage.py startapp products
+uv run manage.py startapp orders
+uv run manage.py startapp users
+uv run manage.py startapp reviews
+
+uv export --format requirements-txt > requirements.txt
+uv export --format requirements-txt --no-hashes > requirements.txt
+uv export --format requirements-txt --no-dev > requirements.txt
+uv export --format requirements-txt --group dev > dev-requirements.txt
+
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py createsuperuser
