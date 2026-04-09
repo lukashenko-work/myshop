@@ -25,4 +25,7 @@ docker compose exec web python manage.py createsuperuser
 
 git remote -v
 git remote remove origin
+git branch -M main 
 git remote add origin https://github.com/lukashenko-work/myshop.git
+git pull
+git push -u origin main
