@@ -7,6 +7,7 @@ uv init  --python 3.11
 
 uv add django
 uv add django-debug-toolbar
+uv add pillow
 
 django-admin startproject core .
 
@@ -28,4 +29,10 @@ git remote remove origin
 git branch -M main 
 git remote add origin https://github.com/lukashenko-work/myshop.git
 git pull
+git pull origin main --rebase
 git push -u origin main
+
+uv run manage.py makemigrations
+uv run manage.py migrate
+docker compose exec web python manage.py makemigrations
+docker compose exec web python manage.py migrate
