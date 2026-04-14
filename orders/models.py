@@ -5,14 +5,15 @@ from products.models import Product
 
 User = get_user_model()
 
+
 class Order(models.Model):
-    
-    
+
     class Status(models.TextChoices):
         PENDING = 'pending', 'Ожидает'
         PAID = 'paid', 'Оплачен'
         SHIPPED = 'shipped', 'Отправлен'
         DELIVERED = 'delivered', 'Доставлен'
+        COMPLETED = 'completed', 'Завершен'
         CANCELLED = 'cancelled', 'Отменен'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', verbose_name='Пользователь')

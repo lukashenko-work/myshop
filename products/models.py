@@ -1,6 +1,10 @@
 from django.db import models
+from django.db.models import Manager
+# Импортируйте Review внутри TYPE_CHECKING, чтобы избежать циклического импорта
+from typing import TYPE_CHECKING
 
-# Create your models here.
+if TYPE_CHECKING:
+    from reviews.models import Review
 
 
 class Category(models.Model):
@@ -37,6 +41,9 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0, verbose_name='Остаток')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # Подсказка для Pylance:
+    reviews: 'Manager[Review]'
 
     class Meta:
         verbose_name = 'Товар'

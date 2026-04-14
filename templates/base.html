@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{% block title %}Hot & Barley{% endblock %}</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static "css/main.css" %}">
+</head>
+<body>
+  <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="home.html" class="header__logo">
+        <img src="../static/img/logo.svg" alt="Hop & Barley Logo">
+        <p class="logo-text">Hop & Barley</p>
+      </a>
+      <nav class="header__nav">
+        <ul>
+          <li><a href="home.html">Products</a></li>
+          <li><a href="guides-recipes.html">Guides & Recipes</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Resources</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Block for unauthorized user -->
+      <div class="header__auth-buttons" id="auth-guest">
+        <a href="login.html" class="button button--secondary">Sign in</a>
+        <a href="register.html" class="button button--primary">Register</a>
+      </div>
+
+      <!-- Block for authorized user -->
+      <div class="header__user-actions" id="auth-user">
+        <a href="account.html" class="user-icon" aria-label="My Account">
+          <img src="../static/img/icons/User_alt.svg" alt="User Account">
+        </a>
+        <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+          <img src="../static/img/icons/Shopping_bag.svg" alt="Shopping Cart">
+        </a>
+
+      </div>
+    </div>
+  </header>
+  <!-- Flash messages -->
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <div class="message {{ message.tag }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <!-- Main Content -->
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+  <!-- Footer -->
+  <footer>
+    <img src="../static/img/background/image-footer.svg" alt="Hop & Barley Hops Logo" class="footer__hops-logo">
+    <nav class="footer__nav">
+      <ul>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Community</a></li>
+        <li><a href="#">Resources</a></li>
+        <li><a href="#">License</a></li>
+      </ul>
+    </nav>
+    <p class="footer__copyright">© Hop & Barley 2025. All rights reserved</p>
+  </footer>
+
+  <script src="../static/js/main.js"></script>
+</body>
+</html>
