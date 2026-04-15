@@ -38,7 +38,7 @@ class ProductListView(ListView):
             qs = qs.filter(price__gte=min_price)
         if max_price:
             qs = qs.filter(price__lte=max_price)
-
+# TODO: Sorting
         # Sort by price if provided
         sort_by = self.request.GET.get('sort', '-created_at')
 

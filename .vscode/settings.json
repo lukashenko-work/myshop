@@ -1,0 +1,41 @@
+{
+    "cSpell.words": [
+        "checkmark",
+        "endfor",
+        "myshop",
+        "onclick"
+    ],
+
+    // "html.format.indentInnerHtml": false,
+    // "html.format.extraLiners": "",
+    // "html.format.unformatted": "html",
+    // "html.format.indentHandlebars": false,
+    //"editor.tabSize": 4,
+    // "html.format.extraLiners": "",
+    // "html.format.unformatted": "html, head, body",
+    
+    "[django-html]": {
+        "editor.tabSize": 2,
+    },
+    
+    "[html]": {
+        "html.format.indentInnerHtml": false,
+        "editor.tabSize": 2,
+    },
+
+    "[python]": {
+        // "editor.defaultColorDecorators": "never",
+        "editor.formatOnType": true,
+        // "editor.wordBasedSuggestions": "off",
+        "editor.tabSize": 4,
+    },
+
+    "todo-tree.filtering.exclude-globs": [
+        "**/.venv/**",
+        "**/env/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+    ],
+    "todo-tree.filtering.use-gitignore": true,
+}
