@@ -30,6 +30,7 @@ services:
       # - static_volume:/app/static
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - PYTHONUNBUFFERED=1  # не буфферизировать print()
     depends_on:
       - db
     networks:

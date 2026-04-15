@@ -10,7 +10,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>{% block title %}Hot & Barley{% endblock %}</title>
   <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Main CSS -->
   <link rel="stylesheet" href="{% static "css/main.css" %}">
 </head>
 <body>
@@ -20,13 +27,13 @@
   <!-- Header -->
   <header>
     <div class="header-container">
-      <a href="home.html" class="header__logo">
+      <a href="{% url 'products:catalog' %}" class="header__logo">
         <img src="../static/img/logo.svg" alt="Hop & Barley Logo">
         <p class="logo-text">Hop & Barley</p>
       </a>
       <nav class="header__nav">
         <ul>
-          <li><a href="home.html">Products</a></li>
+          <li><a href="{% url 'products:catalog' %}">Products</a></li>
           <li><a href="guides-recipes.html">Guides & Recipes</a></li>
           <li><a href="#">Community</a></li>
           <li><a href="#">Resources</a></li>
@@ -61,10 +68,8 @@
   </div>
   {% endif %}
   <!-- Main Content -->
-  <main>
-    {% block content %}
-    {% endblock %}
-  </main>
+  {% block content %}
+  {% endblock %}
   <!-- Footer -->
   <footer>
     <img src="../static/img/background/image-footer.svg" alt="Hop & Barley Hops Logo" class="footer__hops-logo">

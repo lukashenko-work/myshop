@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{product.name}} | Hop & Barley{% endblock %}
+
+{% block content %}
+<main class="page-product">
+  <div class="container">
+    <!-- Product Info Section -->
+    <section class="product-details-section">
+      <div class="product-image-container">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{product.name}}" class="product-image">
+        {% else %}
+        <img src="{% static 'img/photo_coming_soon.jpg' %}" alt="Нет фото" class="product-image">
+        {% endif %}
+      </div>
+      <div class="product-info-column">
+        <div class="product-title-price">
+          <h1 class="product-name">{{product.name}}</h1>
+          <p>Average rating {{avg_rating}}/5</p>
+          <div class="price-section">
+            <span class="price-tag">per pouch</span>
+            <p class="product-price">{{product.price}} ₽</p>
+          </div>
+        </div>
+        <div class="product-description">
+          <p>{{product.description}}</p>
+        </div>
+        <div class="cart-controls">
+          <button class="button button--primary add-to-cart-button" id="add-to-cart-btn">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Add to Cart</span>
+          </button>
+          <div class="quantity-counter is-hidden" id="quantity-counter">
+            <button class="quantity-btn" data-action="decrease" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
+            <span class="quantity-value">1 in cart</span>
+            <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Specifications Accordion -->
+    <section class="accordion-section">
+      <div class="accordion-item">
+        <div class="accordion-title">
+          <h3>Technical Specifications</h3>
+          <i class="fa-solid fa-chevron-down accordion-icon"></i>
+        </div>
+        <div class="accordion-content">
+          <ul>
+            <li><strong>Strain Type:</strong> Ale</li>
+            <li><strong>Flocculation:</strong> Medium</li>
+            <li><strong>Attenuation:</strong> 73-77%</li>
+            <li><strong>Temperature Range:</strong> 62-72°F (17-22°C)</li>
+            <li><strong>Alcohol Tolerance:</strong> 10% ABV</li>
+            <li><strong>Flavor Profile:</strong> Balanced, slightly fruity, hints of citrus and stone fruit.</li>
+            <li><strong>Cell Count:</strong> ~200 Billion Cells</li>
+            <li><strong>Recommended Beer Styles:</strong> American Pale Ale, IPA, Double IPA, Porter, Stout, Amber Ale</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Latest Reviews Section -->
+    <section class="reviews-section">
+      <h2 class="reviews-title">Latest reviews</h2>
+      <div class="reviews-grid">
+        {% for review in reviews %}
+         <div class="review-card">
+          <div class="review-rating">
+            {% for i in max_rating %}
+            {% if i < review.rating %}
+            <i class="fa-solid fa-star"></i>
+            {% else %}
+            <i class="fa-regular fa-star"></i>
+            {% endif %}
+            {% endfor %}
+          </div>
+          <div class="review-body">
+            <h4 class="review-heading">{{review.name}}</h4>
+            <p class="review-text">{{review.comment}}</p>
+          </div>
+          <div class="review-author">
+            <img src="../static/img/avatars/avatar10.svg" alt="User avatar" class="author-avatar">
+            <span class="author-name">{{review.user}}</span>
+          </div>
+        </div>
+        {% empty %}
+        <div class="review-card">
+          No reviews yet. Be the first to review this product.
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}

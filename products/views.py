@@ -1,7 +1,7 @@
 from typing import Any, cast
 
 # from django.shortcuts import render
-from django.db.models import Avg, QuerySet
+from django.db.models import Q, Avg, QuerySet
 from django.views.generic import DetailView, ListView
 
 from orders.models import OrderItem
@@ -25,8 +25,10 @@ class ProductListView(ListView):
 
         # Filter by search query if provided
         search_query = self.request.GET.get('q')
+
         if search_query:
-            qs = qs.filter(name__icontains=search_query) | qs.filter(description__icontains=search_query)
+            # qs = qs.filter(name__icontains=search_query) | qs.filter(description__icontains=search_query)
+            qs = qs.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query)).distinct()
 
         # Filter by price range if provided
         min_price = self.request.GET.get('min_price')
@@ -77,8 +79,9 @@ class ProductDetailView(DetailView):
         product: Product = cast(Product, self.get_object())
 
         context['reviews'] = product.reviews.all().prefetch_related('user').order_by('-created_at')[:3]
-        avg_rating = product.reviews.aggregate(Avg('rating'))['avg_rating']
+        avg_rating = product.reviews.aggregate(Avg('rating'))['rating__avg']
         context['avg_rating'] = round(avg_rating, 1) if avg_rating else None
+        context['max_rating'] = range(5)
 
         if self.request.user.is_authenticated:
             if OrderItem.objects.filter(product=product, order__user=self.request.user, order__status='completed').exists():
