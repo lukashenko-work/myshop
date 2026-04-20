@@ -1,7 +1,7 @@
 from typing import Any, cast
 
 # from django.shortcuts import render
-from django.db.models import Q, Avg, QuerySet
+from django.db.models import F, Q, Avg, Count, QuerySet
 from django.views.generic import DetailView, ListView
 
 from orders.models import OrderItem
@@ -16,7 +16,11 @@ class ProductListView(ListView):
     paginate_by = 12
 
     def get_queryset(self) -> QuerySet:
-        qs = Product.objects.filter(is_active=True).select_related('category')
+        qs = Product.objects.filter(is_active=True).select_related('category').annotate(
+            avg_rating=Avg('reviews__rating'),
+            # avg_rating=Coalesce(Avg('reviews__rating'), Value(0.0)))
+            # Считаем количество связанных отзывов
+            reviews_count=Count('reviews'))
 
         # Filter by category if provided
         category_slug = self.request.GET.get('category')
@@ -38,17 +42,23 @@ class ProductListView(ListView):
             qs = qs.filter(price__gte=min_price)
         if max_price:
             qs = qs.filter(price__lte=max_price)
-# TODO: Sorting
-        # Sort by price if provided
-        sort_by = self.request.GET.get('sort', '-created_at')
 
+        # Sorting, default new
+        sort_by = self.request.GET.get('sort', 'new')
+        print(sort_by)
         sort_map = {
-            'price_asc': 'price',
-            'price_desc': '-price',
-            'new': '-created_at'
+            'price_asc': (F('price').asc(), F('created_at').desc()),
+            'price_desc': (F('price').desc(), F('created_at').desc()),
+            # Сначала самые популярные (много отзывов), при совпадении — по рейтингу
+            'popular': (F('reviews_count').desc(nulls_last=True), F('avg_rating').desc()),
+            # Сначала высокие рейтинги, при совпадении — где больше отзывов
+            'rating': (F('avg_rating').desc(nulls_last=True), F('reviews_count').desc()),
+            'new': (F('created_at').desc(),)
         }
 
-        qs = qs.order_by(sort_map.get(sort_by, '-created_at'))
+        order_rule = sort_map.get(sort_by, (sort_map['new']))
+        print(order_rule)
+        qs = qs.order_by(*order_rule)
 
         return qs
 

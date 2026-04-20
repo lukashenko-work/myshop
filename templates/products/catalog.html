@@ -91,18 +91,38 @@
     <section class="products-area product-grid-section">
         <div class="search-sort-bar">
             <div class="search-input-wrapper">
-                <input type="text"name="q" placeholder="Search" class="search-input" {% if current_q %} value="{{ current_q }}" {% endif %}>
+                <input type="text" name="q" placeholder="Search" class="search-input" {% if current_q %} value="{{ current_q }}" {% endif %}>
                 <button class="search-button" aria-label="Search" type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </div>
             <div class="sort-options">
-                <button class="sort-button active-sort">
-                    <span>New</span>
-                </button>
-                <button class="sort-button">Price ascending</button>
-                <button class="sort-button">Price descending</button>
-                <button class="sort-button">Rating</button>
+                <input type="hidden" id="sortById" name="sort" value="{% if current_sort %}{{ current_sort }}{% else %}new{% endif %}">
+                {% if current_sort == 'new' %}
+                <button class="sort-button active-sort" type="submit"><span>New</span></button>
+                {% else %}
+                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='new'">New</button>
+                {% endif %}
+                {% if current_sort == 'price_asc' %}
+                <button class="sort-button active-sort" type="submit"><span>Price ascending</span></button>
+                {% else %}
+                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='price_asc'">Price ascending</button>
+                {% endif %}
+                {% if current_sort == 'price_desc' %}
+                <button class="sort-button active-sort" type="submit"><span>Price descending</span></button>
+                {% else %}
+                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='price_desc'">Price descending</button>
+                {% endif %}
+                {% if current_sort == 'popular' %}
+                <button class="sort-button active-sort" type="submit"><span>Popular</span></button>
+                {% else %}
+                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='popular'">Popular</button>
+                {% endif %}
+                {% if current_sort == 'rating' %}
+                <button class="sort-button active-sort" type="submit"><span>Rating</span></button>
+                {% else %}
+                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='rating'">Rating</button>
+                {% endif %}
             </div>
         </div>
 
@@ -118,7 +138,11 @@
               <img src="{% static 'img/photo_coming_soon.jpg' %}" alt="Нет фото" class="product-card__image">
               {% endif %}
               <div class="product-card__info">
-                <h4 class="product-card__name">{{ product.name }}</h4>
+                <h4 class="product-card__name"><span class="product-title">{{ product.name }}</span>
+                  <span class="product-rating">
+                  {% if product.avg_rating %} {{product.avg_rating|floatformat:1}}* ({{product.reviews_count}}){% else %} (Нет оценок) {% endif %}
+                  </span>
+                </h4>
                 <p class="product-card__price">{{ product.price }} ₽</p>
                 <p class="product-card__description">{{ product.description|truncatechars:30}}</p>
               </div>

@@ -423,6 +423,26 @@ header {
     line-height: 1.4;
     color: var(--black-main);
     font-weight: 600;
+    width: 100%;
+    display: flex;             /* Включаем Flexbox */
+    justify-content: space-between; /* Расталкиваем содержимое по краям */
+    align-items: flex-start;       /* Выравниваем по вертикали (по верхнему краю)*/
+    gap: 10px;                 /* Отступ, если название слишком длинное */
+}
+
+.product-rating {
+    font-size: 14px;
+    white-space: nowrap;       /* Чтобы рейтинг не переносился на новую строку */
+    color: #FFC107;            /* Можно сразу подкрасить рейтинг */
+    font-weight: bold;
+    flex-shrink: 0;                 /* Не дает рейтингу сжиматься */
+}
+
+.product-title {
+    /* Если название слишком длинное, оно сократится троеточием */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .product-card__price {

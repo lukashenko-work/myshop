@@ -26,7 +26,7 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
         ordering = ['name']
 
-    def __str__(self): 
+    def __str__(self):
         return self.name
 
 
@@ -50,5 +50,5 @@ class Product(models.Model):
         verbose_name_plural = 'Товары'
         ordering = ['-created_at']
 
-    def __str__(self): 
+    def __str__(self):
         return self.name
