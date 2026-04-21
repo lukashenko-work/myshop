@@ -102,3 +102,5 @@ class ProductDetailView(DetailView):
         # context['related_products'] = Product.objects.filter(category=product.category).exclude(pk=product.pk).prefetch_related('category')
         context['categories'] = Category.objects.filter(parent=None).prefetch_related('children')
         return context
+
+# TODO: пейджинг, сток на карточке товаров, оставление отзыва и т.д.
