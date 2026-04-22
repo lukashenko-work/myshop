@@ -19,7 +19,7 @@
               <h2 class="cart-item__name">{{item.product.name}}</h2>
               <div class="cart-item__price-info">
                 <p class="cart-item__price">{{item.price}} ₽</p>
-                <span class="cart-item__price-tag">per {{item.quantity}}100g</span>
+                <span class="cart-item__price-tag">за {{item.product.weight|floatformat:0}} {{item.product.unit}}</span>
               </div>
             </div>
             <div class="cart-item__actions">
