@@ -84,8 +84,7 @@
           </div>
           <div class="review-author">
             <!--TODO:сделать аватары-->
-            <!--TODO:выровнять по высоте-->
-            <img src="{% static "img/avatars/avatar2.svg" %}" alt="User avatar" class="author-avatar">
+            <img src="{% static "img/avatars/avatar"%}{{forloop.counter}}.svg" alt="User avatar" class="author-avatar">
             <span class="author-name">{{review.user}}</span>
           </div>
         </div>

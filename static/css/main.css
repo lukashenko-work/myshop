@@ -1042,7 +1042,9 @@ body.user-logged-in .header__user-actions {
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    /* Убрали фиксированный gap, так как он задает общее расстояние, 
+       а нам нужно разное для разных блоков */
+    height: 100%; 
 }
 
 .review-rating {
@@ -1050,12 +1052,15 @@ body.user-logged-in .header__user-actions {
     gap: 4px;
     color: #FFC107;
     font-size: 20px;
+    margin-bottom: 24px; /* Расстояние от звезд до текста */
 }
 
 .review-body {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    flex-grow: 1;        /* ЗАСТАВЛЯЕТ этот блок занять всё место и прижать автора к низу */
+    margin-bottom: 24px; /* Расстояние от текста до аватара */
 }
 
 .review-heading {
@@ -1075,6 +1080,7 @@ body.user-logged-in .header__user-actions {
     display: flex;
     align-items: center;
     gap: 12px;
+    margin-top: auto;    /* Дополнительная страховка для прижима к низу */
 }
 
 .author-avatar {
