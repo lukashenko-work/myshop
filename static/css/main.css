@@ -1222,6 +1222,12 @@ body.user-logged-in .header__user-actions {
 }
 
 .cart-item__price {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.cart-item__price-total {
     font-size: 31px;
     font-weight: 600;
     line-height: 1.4;

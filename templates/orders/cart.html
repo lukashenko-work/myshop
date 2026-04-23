@@ -5,22 +5,26 @@
 <main class="cart-page-wrapper">
   <div class="cart-container">
     <h1 class="cart-title">Shopping Cart</h1>
-    {% if cart|length >= 0%}
+    {% if cart|length >= 0 %}
       <div class="cart-items-list">
         {% for item in cart %}
         <div class="cart-item">
-          {% if item.product.image %}
-          <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item__image">
-          {% else %}
-          <img src="{% static 'img/photo_coming_soon.jpg' %}" alt="Нет фото" class="cart-item__image">
-          {% endif %}
+          <a href="{% url "products:product" slug=item.product.slug %}" class="product-card-link">
+            {% if item.product.image %}
+            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item__image">
+            {% else %}
+            <img src="{% static 'img/photo_coming_soon.jpg' %}" alt="Нет фото" class="cart-item__image">
+            {% endif %}
+          </a>
           <div class="cart-item__body">
             <div class="cart-item__details">
-              <h2 class="cart-item__name">{{item.product.name}}</h2>
-              <div class="cart-item__price-info">
-                <p class="cart-item__price">{{item.price}} ₽</p>
-                <span class="cart-item__price-tag">за {{item.product.weight|floatformat:0}} {{item.product.unit}}</span>
-              </div>
+              <a href="{% url "products:product" slug=item.product.slug %}" class="product-card-link">
+                <h2 class="cart-item__name">{{item.product.name}}</h2>
+                <div class="cart-item__price-info">
+                  <p class="cart-item__price">{{item.price}} ₽</p>
+                  <span class="cart-item__price-tag">за {{item.product.weight|floatformat:0}} {{item.product.unit}}</span>
+                </div>
+              </a>
             </div>
             <div class="cart-item__actions">
               <div class="cart-item__quantity-selector">
@@ -28,6 +32,7 @@
                 <span class="quantity-value-cart">{{item.quantity}}</span>
                 <button class="quantity-btn-cart" data-action="increase"><i class="fa-solid fa-plus"></i></button>
               </div>
+              <p class="cart-item__price-total">{{item.total_price}} ₽</p>
               <button class="button--remove" data-action="remove">
                 Remove <i class="fa-solid fa-xmark"></i>
               </button>
@@ -35,30 +40,13 @@
           </div>
         </div>
         {% endfor %}
-        {{ total }}
-        <div class="cart-item" data-price="5.99">
-        <img src="../../static/img/products/citra_hops.jpg" alt="Citra Hops" class="cart-item__image">
-        <div class="cart-item__body">
-          <div class="cart-item__details">
-            <h2 class="cart-item__name">Citra Hops</h2>
-            <div class="cart-item__price-info">
-              <p class="cart-item__price" data-item-total-price>
-                $29.95
-              </p>
-              <span class="cart-item__price-tag">per 100g</span>
-            </div>
-          </div>
-          <div class="cart-item__actions">
-            <div class="cart-item__quantity-selector">
-              <button class="quantity-btn-cart" data-action="decrease"><i class="fa-solid fa-minus"></i></button>
-              <span class="quantity-value-cart">5</span>
-              <button class="quantity-btn-cart" data-action="increase"><i class="fa-solid fa-plus"></i></button>
-            </div>
-            <button class="button--remove" data-action="remove">
-              Remove <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
+      </div>
+      <div class="cart-summary">
+        <div class="cart-summary__total">
+          <p>Всего товаров {{ cart|length }} шт.</p>
+          <p id="cart-total-price">на сумму {{ total }} ₽</p>
         </div>
+        <a href="checkout.html" class="button button--primary button--checkout">Proceed to Checkout</a>
       </div>
     {% else %}
       <p class="cart-empty">Корзина пуста</p>
