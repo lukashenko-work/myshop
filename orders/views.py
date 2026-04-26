@@ -67,6 +67,7 @@ class CheckoutView(LoginRequiredMixin, View):
     """
 
     def get(self, request: HttpRequest) -> HttpResponse:
+        template_name = 'orders/checkout.html'
         cart = Cart(request)
         if len(cart) == 0:
             messages.error(request, 'Ваша корзина пуста')
@@ -74,7 +75,7 @@ class CheckoutView(LoginRequiredMixin, View):
 
         form = CheckoutForm()
         total = cart.get_total_price()
-        return render(request, 'orders/checkout.html', {
+        return render(request, template_name, {
             'form': form,
             'cart': cart,
             'total': total

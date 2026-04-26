@@ -7,7 +7,7 @@ class CheckoutForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'Input', 'placeholder': 'Иван Иванов'}))
 
     email = forms.EmailField(
-        max_length=200, label='E-mail',
+        max_length=100, label='E-mail',
         widget=forms.TextInput(attrs={'class': 'Input', 'placeholder': 'example@mail.ru'}))
 
     phone_number = forms.CharField(

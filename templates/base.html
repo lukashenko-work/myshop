@@ -44,8 +44,8 @@
 
       <!-- Block for unauthorized user -->
       <div class="header__auth-buttons" id="auth-guest">
-        <a href="login.html" class="button button--secondary">Sign in</a>
-        <a href="register.html" class="button button--primary">Register</a>
+        <a href="{% url 'users:login' %}" class="button button--secondary">Sign in</a>
+        <a href="{% url 'users:register' %}" class="button button--primary">Register</a>
       </div>
 
       <!-- Block for authorized user -->
