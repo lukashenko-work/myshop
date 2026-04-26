@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Manager
 from django.contrib.auth import get_user_model
 
 from products.models import Product
@@ -26,6 +27,9 @@ class Order(models.Model):
     comment = models.TextField(blank=True, null=True, verbose_name='Комментарий')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # Подсказка для Pylance:
+    items: 'Manager[OrderItem]'
 
     class Meta:
         verbose_name = 'Заказ'

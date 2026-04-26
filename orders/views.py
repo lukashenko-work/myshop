@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Any
 
 from django.contrib import messages
@@ -130,15 +131,39 @@ class CheckoutView(LoginRequiredMixin, View):
         return redirect('orders:success', order_id=order.pk)
 
     def _send_confirmation_email(self, order: Order) -> None:
+        """
+        Отправляет письмо о подтверждении заказа покупателю и администратору.
+        """
+        # Сначала покупателю
         subject = f'Ваш заказ №{order.pk} в Hop & Barley'
-        # message = f'Заказ №{order.pk} на сумму {order.total_price:.2f} успешно оформлен\n'
+
+        items_list = 'Позиции в заказе:\n'
+        for items in order.items.all():
+            total_price = Decimal(items.price) * items.quantity
+            items_list += f'{items.product.name} - {items.quantity} шт. * {items.price:.2f} р. = {total_price:.2f} р.\n'
+
         message = (
             f'Здравствуйте, {order.full_name}.\n\n'
             f'Заказ №{order.pk} на сумму {order.total_price:.2f} успешно оформлен\n'
-            f'Телефон: {order.phone_number}'
-            f'Адрес доставки: {order.shipping_address}\nHop & Barley'
+            f'Телефон: {order.phone_number}\n'
+            f'Адрес доставки: {order.shipping_address}\nHop & Barley\n\n'
         )
+        message += items_list
+        print(message)
         send_mail(subject, message, settings.FROM_EMAIL, [order.email])
+
+        # Теперь админу
+        subject = f'Подтвердить заказ №{order.pk} {order.full_name }'
+        message = (
+            f'Привет, надо позвонить {order.full_name} по телефону {order.phone_number} м согласовать отправку.\n\n'
+            f'Заказ №{order.pk} на сумму {order.total_price:.2f} \n'
+            f'Телефон: {order.phone_number}'
+            f'Email: {order.email}'
+            f'Адрес доставки: {order.shipping_address}'
+        )
+        message += items_list
+
+        send_mail(subject, message, settings.ADMIN_EMAIL, [order.email])
 
 
 class OrderSuccessView(LoginRequiredMixin, DetailView):
