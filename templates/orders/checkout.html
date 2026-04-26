@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title%}Корзина | Hop & Barley{% endblock %}
+{% block content %}
+<main class="checkout-page-wrapper">
+  <div class="checkout-container">
+    <h1 class="checkout-title">Order Details</h1>
+
+    <form id="checkout-form" method="post" action="{% url 'orders:checkout' %}" class="checkout-form">
+      {% csrf_token %}
+      <!-- Shipping Information -->
+      <section class="checkout-section">
+        <h2 class="checkout-section__title">Shipping information</h2>
+        <div class="checkout-form-group">
+          <label>{{ form.full_name.label }}</label>
+            {{ form.full_name }}
+        </div>
+          <div class="checkout-form-group">
+            <label>{{ form.email.label }}</label>
+              {{ form.email }}
+          </div>
+          <div class="checkout-form-group">
+            <label>{{ form.phone_number.label }}</label>
+              {{ form.phone_number }}
+          </div>
+          <div class="checkout-form-group">
+            <label>{{ form.zip_code.label }}</label>
+              {{ form.zip_code }}
+          </div>
+          <div class="checkout-form-group">
+            <label>{{ form.city.label }}</label>
+              {{ form.city }}
+          </div>
+          <div class="checkout-form-group">
+            <label>{{ form.address.label }}</label>
+              {{ form.address }}
+          </div>
+      </section>
+
+      <!-- Payment Method -->
+      <section class="checkout-section">
+        <h2 class="checkout-section__title">Payment Method</h2>
+        <div class="payment-options">
+          <label>{{ form.payment_method.label }}</label>
+          {% for radio in form.payment_method %}
+            <label class="radio-option">
+              <input type="radio" name="{{ radio.data.name }}" value="{{ radio.data.value }}" {% if forloop.counter == 2 %}checked{% endif %}>
+              <span class="radio-custom"></span>
+              <span class="radio-label">{{ radio.choice_label }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Comments -->
+      <section class="checkout-section">
+        <h2 class="checkout-section__title">Comments</h2>
+          <div class="checkout-form-group">
+            <label>{{ form.comment.label }}</label>
+              {{ form.comment }}
+          </div>
+      </section>
+
+      <!-- Order Summary -->
+      <section class="checkout-summary">
+          <h2 class="checkout-section__title">Order Summary</h2>
+          <div class="summary-details">
+              <div class="summary-total">
+                  <p>Total</p>
+                  <p>{{ total }} ₽</p>
+              </div>
+              <button type="submit" class="button button--primary button--pay">Pay</button>
+          </div>
+      </section>
+    </form>
+  </div>
+</main>
+{% endblock %}

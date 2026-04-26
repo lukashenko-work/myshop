@@ -28,11 +28,14 @@
           <p>{{product.description}}</p>
         </div>
         <div class="cart-controls">
-          <button class="button button--primary add-to-cart-button" id="add-to-cart-btn">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span>Add to Cart</span>
-          </button>
-          <div class="quantity-counter is-hidden" id="quantity-counter">
+          <form action="{% url 'orders:cart_add' product.id %}" method="post">
+            {% csrf_token %}
+            <button class="button button--primary add-to-cart-button" id="add-to-cart-btn" type="submit">
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span>Add to Cart</span>
+            </button>
+          </form>
+          <div class="quantity-counter is-hidden">
             <button class="quantity-btn" data-action="decrease" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
             <span class="quantity-value">1 in cart</span>
             <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>

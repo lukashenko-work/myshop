@@ -45,7 +45,6 @@ class ProductListView(ListView):
 
         # Sorting, default new
         sort_by = self.request.GET.get('sort', 'new')
-        print(sort_by)
         sort_map = {
             'price_asc': (F('price').asc(), F('created_at').desc()),
             'price_desc': (F('price').desc(), F('created_at').desc()),
@@ -57,7 +56,6 @@ class ProductListView(ListView):
         }
 
         order_rule = sort_map.get(sort_by, (sort_map['new']))
-        print(order_rule)
         qs = qs.order_by(*order_rule)
 
         return qs

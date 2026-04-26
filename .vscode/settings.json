@@ -2,8 +2,13 @@
     "cSpell.words": [
         "checkmark",
         "endfor",
+        "floatformat",
+        "forloop",
+        "hopfen",
         "myshop",
-        "onclick"
+        "onclick",
+        "truncatechars",
+        "xmark"
     ],
 
     // "html.format.indentInnerHtml": false,
