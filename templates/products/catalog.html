@@ -143,7 +143,12 @@
                   {% if product.avg_rating %} {{product.avg_rating|floatformat:1}}* ({{product.reviews_count}}){% else %} (Нет оценок) {% endif %}
                   </span>
                 </h4>
-                <p class="product-card__price">{{ product.price }} ₽</p>
+                <div class="product-card__price_info">
+                  <span class="product-card__price">{{ product.price }} ₽</span>
+                  {% if product.stock == 0 %}
+                  <span class="product-card__price_out out-of-stock">Out of stock</span>
+                  {% endif %}
+                </div>
                 <p class="product-card__description">{{ product.description|truncatechars:30}}</p>
               </div>
             </div>

@@ -18,9 +18,13 @@
       <div class="product-info-column">
         <div class="product-title-price">
           <h1 class="product-name">{{product.name}}</h1>
-          <p>Average rating {{avg_rating}}/5</p>
+          <span class="product-rating">
+          {% if avg_rating %} Average rating {{avg_rating|floatformat:1}}* ({{reviews_count}})
+          {% else %} (Нет оценок) {% endif %}
+          </span>
           <div class="price-section">
-            <span class="price-tag">per pouch</span>
+            <!-- TODO: per-->
+            <span class="price-tag">за {{product.weight|floatformat:0}} {{product.unit}}</span>
             <p class="product-price">{{product.price}} ₽</p>
           </div>
         </div>
@@ -28,6 +32,7 @@
           <p>{{product.description}}</p>
         </div>
         <div class="cart-controls">
+          {% if product.stock > 0 %}
           <form action="{% url 'orders:cart_add' product.id %}" method="post">
             {% csrf_token %}
             <button class="button button--primary add-to-cart-button" id="add-to-cart-btn" type="submit">
@@ -40,6 +45,9 @@
             <span class="quantity-value">1 in cart</span>
             <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
           </div>
+          {% else %}
+          <div class="out-of-stock">Out of stock</div>
+          {% endif %}
         </div>
       </div>
     </section>

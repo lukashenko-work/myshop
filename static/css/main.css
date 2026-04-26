@@ -445,6 +445,17 @@ header {
     white-space: nowrap;
 }
 
+.product-card__price_info {
+    display: flex;
+    justify-content: space-between; /* Расталкиваем содержимое по краям */
+    gap: 10px;
+}
+
+.product-card__price_out {
+    white-space: nowrap;       /* Чтобы рейтинг не переносился на новую строку */
+    flex-shrink: 0;                 /* Не дает рейтингу сжиматься */
+}
+
 .product-card__price {
     font-size: 16px;
     font-weight: 600;
@@ -1107,6 +1118,10 @@ body.user-logged-in .header__user-actions {
     height: 40px;
 }
 
+.out-of-stock {
+    color: red;
+    font-weight: bold;
+}
 .is-hidden {
     display: none !important;
 }

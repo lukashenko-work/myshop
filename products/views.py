@@ -88,7 +88,9 @@ class ProductDetailView(DetailView):
 
         context['reviews'] = product.reviews.all().prefetch_related('user').order_by('-created_at')[:3]
         avg_rating = product.reviews.aggregate(Avg('rating'))['rating__avg']
+        reviews_count = product.reviews.count()
         context['avg_rating'] = round(avg_rating, 1) if avg_rating else None
+        context['reviews_count'] = reviews_count
         context['max_rating'] = range(5)
 
         if self.request.user.is_authenticated:
