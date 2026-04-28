@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Main CSS -->
-  <link rel="stylesheet" href="{% static "css/main.css" %}">
+  <link rel="stylesheet" href="{% static "css/main_css.css" %}">
 </head>
 <body>
   <!--[if lt IE 7]>
@@ -41,14 +41,9 @@
           <li><a href="#">Contact</a></li>
         </ul>
       </nav>
-
-      <!-- Block for unauthorized user -->
-      <div class="header__auth-buttons" id="auth-guest">
-        <a href="{% url 'users:login' %}" class="button button--secondary">Sign in</a>
-        <a href="{% url 'users:register' %}" class="button button--primary">Register</a>
-      </div>
-
+      {% if user.is_authenticated %}
       <!-- Block for authorized user -->
+      <p>Вы вошли как: {{ user.username }} {{ user.email }} {{user.profile.phone_number}}</p>
       <div class="header__user-actions" id="auth-user">
         <a href="account.html" class="user-icon" aria-label="My Account">
           <img src="{% static "img/icons/User_alt.svg" %}" alt="User Account">
@@ -56,8 +51,17 @@
         <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
           <img src="{% static "/img/icons/Shopping_bag.svg" %}" alt="Shopping Cart">
         </a>
-
+        <a href="{% url 'users:logout' %}" class="button button--secondary button--full-width" id="logout-button">Logout</a>
       </div>
+      {% else %}
+      <!-- Block for unauthorized user -->
+      <p>Вы зашли как гость</p>
+      <div class="header__auth-buttons" id="auth-guest">
+        <a href="{% url 'users:login' %}" class="button button--secondary">Sign in</a>
+        <a href="{% url 'users:register' %}" class="button button--primary">Register</a>
+      </div>
+      {% endif %}
+
     </div>
   </header>
   <!-- Flash messages -->

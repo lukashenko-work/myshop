@@ -1,3 +1,12 @@
+# Project settings
+# todo.md - temp file
+todo.md
+# WSL2 configuration for Windows Docker Desktop
+# Place to c:\Users\rlukashenko\.wslconfig
+.wslconfig
+# Images for this project
+media/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -9,9 +18,6 @@ __pycache__/
 # Log files
 logs/
 *.log
-
-# Images for this project
-media/
 
 # Distribution / packaging
 .Python

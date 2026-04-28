@@ -83,6 +83,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+# Sessions
+# Нужно ли удалять сессию при закрытии браузера по умолчанию
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+# 1 месяц (в секундах: 60 * 60 * 24 * 30)
+SESSION_COOKIE_AGE = 2592000
+# Продлять сессию при каждой активности на сайте
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -103,6 +110,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
+    # TODO: uncomment
     # {
     #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     # },
