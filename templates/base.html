@@ -48,7 +48,7 @@
         <a href="account.html" class="user-icon" aria-label="My Account">
           <img src="{% static "img/icons/User_alt.svg" %}" alt="User Account">
         </a>
-        <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+        <a href="{% url 'orders:cart' %}" class="cart-icon" aria-label="Shopping Cart">
           <img src="{% static "/img/icons/Shopping_bag.svg" %}" alt="Shopping Cart">
         </a>
         <a href="{% url 'users:logout' %}" class="button button--secondary button--full-width" id="logout-button">Logout</a>

@@ -27,12 +27,10 @@ class UserLogin(View):
     template_name = 'users/login.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:
-        print('get')
         form = LoginForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request: HttpRequest) -> HttpResponse:
-        print('post')
         form = LoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
@@ -40,16 +38,13 @@ class UserLogin(View):
             remember_me = form.cleaned_data.get('remember_me')
 
             user = authenticate(request, username=email, password=password)
-            print(user)
             if user is not None:
                 login(request, user)
                 if remember_me:
                     # Сессия будет жить долго (обычно 2 недели, настраивается в settings)
-                    print(1)
                     request.session.set_expiry(None)
                 else:
                     # Сессия удалится сразу после закрытия вкладки/браузера
-                    print(2)
                     request.session.set_expiry(0)
                 return redirect('products:catalog')
             else:

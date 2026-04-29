@@ -23,7 +23,6 @@
           {% else %} (Нет оценок) {% endif %}
           </span>
           <div class="price-section">
-            <!-- TODO: per-->
             <span class="price-tag">за {{product.weight|floatformat:0}} {{product.unit}}</span>
             <p class="product-price">{{product.price}} ₽</p>
           </div>
@@ -31,8 +30,9 @@
         <div class="product-description">
           <p>{{product.description}}</p>
         </div>
+        {% if product.stock > 0 %}
         <div class="cart-controls">
-          {% if product.stock > 0 %}
+          <div style="padding-bottom: 8px;">Доступно к заказу: {{ product.stock }} ед.</div>
           <form action="{% url 'orders:cart_add' product.id %}" method="post">
             {% csrf_token %}
             <button class="button button--primary add-to-cart-button" id="add-to-cart-btn" type="submit">
@@ -45,10 +45,10 @@
             <span class="quantity-value">1 in cart</span>
             <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
           </div>
+        </div>
           {% else %}
           <div class="out-of-stock">Out of stock</div>
           {% endif %}
-        </div>
       </div>
     </section>
 
