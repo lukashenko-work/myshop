@@ -28,13 +28,28 @@
         "html.format.indentInnerHtml": false,
         "editor.tabSize": 2,
     },
+    "flake8.args": [
+        // "--format=%(row)d,%(col)d,%(code).1s,%(code)s:%(text)s", // УДАЛИТЬ ЭТО
+    ],
+    
+    "python.linting.flake8Enabled": false,
 
     "[python]": {
         // "editor.defaultColorDecorators": "never",
-        "editor.formatOnType": true,
+        // "editor.formatOnType": true,
         // "editor.wordBasedSuggestions": "off",
         "editor.tabSize": 4,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        // "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
     },
+
+    // "isort.args":["--profile", "black"],
+    // "isort.path": ["C:\\progs\\Python\\Python314\\Scripts\\isort.exe"],
+    // "isort.importStrategy": "fromEnvironment",
+    // "isort.path": ["${workspaceFolder}/.venv/Scripts/isort.exe"],
 
     "todo-tree.filtering.exclude-globs": [
         "**/.venv/**",

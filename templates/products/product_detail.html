@@ -35,7 +35,7 @@
           <div style="padding-bottom: 8px;">Доступно к заказу: {{ product.stock }} ед.</div>
           <form action="{% url 'orders:cart_add' product.id %}" method="post">
             {% csrf_token %}
-            <button class="button button--primary add-to-cart-button" id="add-to-cart-btn" type="submit">
+            <button class="button button--primary add-to-cart-button"  onclick="addToCart(event, {{ product.id }})" id="add-to-cart-btn1">
               <i class="fa-solid fa-cart-shopping"></i>
               <span>Add to Cart</span>
             </button>
@@ -51,7 +51,29 @@
           {% endif %}
       </div>
     </section>
-
+<script>
+  function addToCart(event, productId) {
+    //event.stopPropagation();
+    event.preventDefault();
+    alert(productId);
+    const myButton = document.getElementById('add-to-cart-btn1');
+    //myButton.addEventListener('click', function() {
+    alert(myButton);
+    
+    postData('/ajax/add-favorite/', { id: productId })
+    
+    return;
+    
+        .then(result => {
+            if (result.status === 'success') {
+                console.log('Готово:', result.message);
+                this.classList.add('active'); // Визуально меняем кнопку
+            }
+        })
+        .catch(error => console.error('Ошибка:', error));
+});
+  }
+</script>
     <!-- Technical Specifications Accordion -->
     <section class="accordion-section">
       <div class="accordion-item">

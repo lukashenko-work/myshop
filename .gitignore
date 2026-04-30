@@ -1,6 +1,7 @@
 # Project settings
 # todo.md - temp file
-todo.md
+todo*.md
+
 # WSL2 configuration for Windows Docker Desktop
 # Place to c:\Users\rlukashenko\.wslconfig
 .wslconfig
