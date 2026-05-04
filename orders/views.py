@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 from typing import Any
 
@@ -20,7 +21,7 @@ from .forms import CheckoutForm
 
 
 class CartAddView(View):
-    def post(self, request: HttpRequest, product_id: int):
+    def post(self, request: HttpRequest, product_id: int) -> HttpResponse:
         product = get_object_or_404(Product, id=product_id, is_active=True)
         cart = Cart(request)
         quantity = int(request.POST.get('quantity', 1))
@@ -35,27 +36,37 @@ class CartAddView(View):
 
 
 class CartAddViewAJAX(View):
-    def post(self, request: HttpRequest, product_id: int):
+    def post(self, request: HttpRequest, product_id: int) -> JsonResponse:
+        print(f'is_ajax: {is_ajax(request)}')
         product = get_object_or_404(Product, id=product_id, is_active=True)
-        print(product)
         cart = Cart(request)
-        print(cart)
-        quantity = int(request.POST.get('quantity', 1))
+        quantity_in_cart = cart.get_quantity(product_id)
 
-        if quantity < 1 or quantity > product.stock:
-            messages.error(
-                request,
-                message=f'Недопустимое количество. В наличии {product.stock} шт.',
-            )
-            return JsonResponse({'error': 'Неверные данные'}, status=400)
+        # Читаем и декодируем JSON из тела запроса
+        data = json.loads(request.body)
+        # Получаем значение по ключу
+        quantity_todo = data.get('quantity', 1)
 
-        cart.add(product, quantity)
-        messages.success(request, message=f'{product.name} добавлен в корзину')
+        quantity = quantity_in_cart + quantity_todo
 
-        return JsonResponse({'status': 'success'})
+        if quantity < 0 or quantity > product.stock:
+            msg = f'Недопустимое количество. В наличии {product.stock} шт.'
+            return JsonResponse({'success': False, 'message': msg, 'quantity': quantity_in_cart}, status=200)
+
+        if quantity == 0 and quantity_todo < 0:
+            cart.remove(product_id)
+            msg = f'{product.name} удален из корзины'
+            return JsonResponse({'success': True, 'message': msg, 'quantity': quantity}, status=200)
+
+        cart.add(product, quantity, True)
+        if quantity_todo > 0:
+            msg = f'{product.name} добавлен в корзину'
+        elif quantity_todo < 0:
+            msg = f'{product.name} удален из корзины'
+        return JsonResponse({'success': True, 'message': msg, 'quantity': quantity}, status=200)
 
 
-def is_ajax(request):
+def is_ajax(request: HttpRequest) -> bool:
     return request.headers.get('x-requested-with') == 'XMLHttpRequest'
 
 
@@ -100,8 +111,7 @@ class CheckoutView(LoginRequiredMixin, View):
 
         form = CheckoutForm()
         total = cart.get_total_price()
-        return render(request, template_name, {'form': form, 'cart': cart, 'total': total}
-        )
+        return render(request, template_name, {'form': form, 'cart': cart, 'total': total})
 
     def post(self, request: HttpRequest) -> HttpResponse:
         """Создание заказа"""

@@ -1,6 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
+{% block extra_head %}
+<style type="text/css">
+  .alert-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: var(--dark-green);
+    color: #fff;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease; /* Длительность анимации */
+    z-index: 1000;
+  }
 
+  .alert-message.show {
+    opacity: 1;
+  }
+</style>
+{% endblock %}
 {% block title %}{{product.name}} | Hop & Barley{% endblock %}
 
 {% block content %}
@@ -33,17 +52,26 @@
         {% if product.stock > 0 %}
         <div class="cart-controls">
           <div style="padding-bottom: 8px;">Доступно к заказу: {{ product.stock }} ед.</div>
+          <button onclick="addToCartTest(event, {{ product.id }});">ADD</button>
+          <script>
+            function addToCartTest(event, productId) {
+                event.stopPropagation();
+                event.preventDefault();
+                alert(productId);
+            }
+            
+          </script>
           <form action="{% url 'orders:cart_add' product.id %}" method="post">
             {% csrf_token %}
-            <button class="button button--primary add-to-cart-button"  onclick="addToCart(event, {{ product.id }})" id="add-to-cart-btn1">
+            <button type="button" class="button button--primary add-to-cart-button" onclick="addToCartButton(event);" id="add-to-cart-btn1">
               <i class="fa-solid fa-cart-shopping"></i>
               <span>Add to Cart</span>
             </button>
           </form>
           <div class="quantity-counter is-hidden">
-            <button class="quantity-btn" data-action="decrease" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
+            <button class="quantity-btn" aria-label="Decrease quantity" onclick="decreaseCartButton(event);"><i class="fa-solid fa-minus"></i></button>
             <span class="quantity-value">1 in cart</span>
-            <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
+            <button class="quantity-btn" aria-label="Increase quantity" onclick="increaseCartButton(event);"><i class="fa-solid fa-plus"></i></button>
           </div>
         </div>
           {% else %}
@@ -52,27 +80,111 @@
       </div>
     </section>
 <script>
-  function addToCart(event, productId) {
+  function addToCartButton(event) {
+    addToCart(event, true);
+  }
+  
+  function increaseCartButton(event) {
+    addToCart(event, true);
+  }
+  function decreaseCartButton(event) {
+    addToCart(event, false);
+  }
+
+  function addToCart(event, increase) {
     //event.stopPropagation();
     event.preventDefault();
-    alert(productId);
     const myButton = document.getElementById('add-to-cart-btn1');
     //myButton.addEventListener('click', function() {
-    alert(myButton);
-    
-    postData('/ajax/add-favorite/', { id: productId })
-    
-    return;
-    
-        .then(result => {
-            if (result.status === 'success') {
-                console.log('Готово:', result.message);
-                this.classList.add('active'); // Визуально меняем кнопку
-            }
-        })
-        .catch(error => console.error('Ошибка:', error));
-});
+    const url = "{% url 'orders:cart_addAJAX' product.id %}";
+    const csrfToken = '{{csrf_token}}';
+    let quantity = 1;
+    if (!increase) {
+      quantity = -1;
+    }
+
+    fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json', // ОБЯЗАТЕЛЬНО
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+              quantity: quantity,
+            })
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json()
+      } else {
+        showNotification('Ошибка добавления в корзину')
+      }
+    })
+    .then(data => {
+      const addToCartBtn = document.getElementById('add-to-cart-btn1');
+      const quantityCounter = document.querySelector('.quantity-counter');
+      const quantityValueSpan = document.querySelector('.quantity-value');
+      showNotification(data.message);
+      quantity = data.quantity;
+      if (quantity === 0) {
+        addToCartBtn.classList.remove('is-hidden');
+        quantityCounter.classList.add('is-hidden');
+      } else if (quantity > 0) {
+        addToCartBtn.classList.add('is-hidden');
+        quantityCounter.classList.remove('is-hidden');
+        quantityValueSpan.textContent = `${quantity} in cart`;
+      } else {
+        addToCartBtn.classList.add('is-hidden');
+        quantityCounter.classList.add('is-hidden');
+      }
+    })
+    .catch(err => console.error('Error:', err));
   }
+
+  function showNotification(text) {
+    // 1. Создаем элемент
+    const msg = document.createElement('div');
+    msg.className = 'alert-message';
+    msg.innerText = text;
+    document.body.appendChild(msg);
+
+    // 2. Делаем его видимым (с небольшой задержкой для срабатывания CSS transition)
+    setTimeout(() => msg.classList.add('show'), 10);
+
+    // 3. Через 3 секунды начинаем исчезновение
+    setTimeout(() => {
+        msg.classList.remove('show');
+        
+        // 4. После завершения анимации (0.5с) полностью удаляем из DOM
+        setTimeout(() => msg.remove(), 500);
+    }, 2000);
+}
+  // "Add to Cart" Button and Counter
+  /*
+  const cartControls = document.querySelector('.cart-controls');
+  if (cartControls) {
+      const addToCartBtn = cartControls.querySelector('#add-to-cart-btn');
+      const quantityCounter = cartControls.querySelector('#quantity-counter');
+      const decreaseBtn = quantityCounter.querySelector('[data-action="decrease"]');
+      const increaseBtn = quantityCounter.querySelector('[data-action="increase"]');
+      const quantityValueSpan = quantityCounter.querySelector('.quantity-value');
+      let quantity = 0;
+      function updateView() {
+          if (quantity === 0) {
+              addToCartBtn.classList.remove('is-hidden');
+              quantityCounter.classList.add('is-hidden');
+          } else {
+              addToCartBtn.classList.add('is-hidden');
+              quantityCounter.classList.remove('is-hidden');
+              quantityValueSpan.textContent = `${quantity} in cart`;
+          }
+      }
+      addToCartBtn.addEventListener('click', function() { quantity = 1; updateView(); });
+      decreaseBtn.addEventListener('click', function() { if (quantity > 0) { quantity--; updateView(); } });
+      increaseBtn.addEventListener('click', function() { quantity++; updateView(); });
+      updateView();
+  }*/
 </script>
     <!-- Technical Specifications Accordion -->
     <section class="accordion-section">

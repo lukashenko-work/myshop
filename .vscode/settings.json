@@ -28,9 +28,9 @@
         "html.format.indentInnerHtml": false,
         "editor.tabSize": 2,
     },
-    "flake8.args": [
-        // "--format=%(row)d,%(col)d,%(code).1s,%(code)s:%(text)s", // УДАЛИТЬ ЭТО
-    ],
+    // "flake8.args": [
+    //     // "--format=%(row)d,%(col)d,%(code).1s,%(code)s:%(text)s", // УДАЛИТЬ ЭТО
+    // ],
     
     "python.linting.flake8Enabled": false,
 

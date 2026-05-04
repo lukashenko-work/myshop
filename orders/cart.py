@@ -15,6 +15,9 @@ class Cart:
             cart = self.session[CART_SESSION_KEY] = {}
         self.cart = cart
 
+    def get_quantity(self, product_id: int):
+        return self.cart.get(str(product_id), {'quantity': 0})['quantity']
+
     def add(self, product: Product, quantity: int = 1, override: bool = False):
         product_id = str(product.pk)
 

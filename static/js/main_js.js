@@ -105,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         // "Add to Cart" Button and Counter
+        /*
         const cartControls = document.querySelector('.cart-controls');
         if (cartControls) {
             const addToCartBtn = cartControls.querySelector('#add-to-cart-btn');
@@ -127,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             decreaseBtn.addEventListener('click', function() { if (quantity > 0) { quantity--; updateView(); } });
             increaseBtn.addEventListener('click', function() { quantity++; updateView(); });
             updateView();
-        }
+        }*/
     }
 
     // --- Logic for Cart Page (cart.html) ---
