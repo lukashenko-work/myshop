@@ -156,6 +156,28 @@ header {
     border-color: var(--dark-green);
 }
 
+/*
+========================================
+  Messages (floated) for Product, Cart
+========================================
+*/
+.alert-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: var(--dark-green);
+    color: #fff;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease; /* Длительность анимации */
+    z-index: 1000;
+}
+
+.alert-message.show {
+    opacity: 1;
+}
+
 /* Hero Banner */
 .hero-banner {
     position: relative;
@@ -1141,14 +1163,6 @@ body.user-logged-in .header__user-actions {
     font-weight: 600;
 }
 
-.is-hidden {
-    /* display: none !important; */
-    display: none;
-}
-.just-hidden {
-    visibility: hidden;
-}
-
 .quantity-counter {
     display: flex;
     justify-content: space-between;
@@ -1173,6 +1187,16 @@ body.user-logged-in .header__user-actions {
     border-radius: 50%;
     color: var(--black-main);
     transition: background-color 0.2s ease;
+}
+
+/* Этот элемент должен находиться ниже тех элементов, которые он скрывает, иначе надо ставить !important */
+.is-hidden {
+    /* display: none !important; */
+    display: none;
+}
+
+.just-hidden {
+    visibility: hidden;
 }
 
 .quantity-btn:hover {

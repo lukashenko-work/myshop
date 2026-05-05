@@ -1,24 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% block extra_head %}
-<style type="text/css">
-  .alert-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background: var(--dark-green);
-    color: #fff;
-    border-radius: 10px;
-    opacity: 0;
-    transition: opacity 0.5s ease; /* Длительность анимации */
-    z-index: 1000;
-  }
-
-  .alert-message.show {
-    opacity: 1;
-  }
-</style>
 {% endblock %}
 {% block title %}{{product.name}} | Hop & Barley{% endblock %}
 
