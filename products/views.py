@@ -1,9 +1,10 @@
 from typing import Any, cast
 
 # from django.shortcuts import render
-from django.db.models import F, Q, Avg, Count, QuerySet
+from django.db.models import Avg, Count, F, Q, QuerySet
 from django.views.generic import DetailView, ListView
 
+from orders.cart import Cart
 from orders.models import OrderItem
 
 from .models import Category, Product
@@ -92,6 +93,9 @@ class ProductDetailView(DetailView):
         context['avg_rating'] = round(avg_rating, 1) if avg_rating else None
         context['reviews_count'] = reviews_count
         context['max_rating'] = range(5)
+        cart = Cart(self.request)
+        quantity_in_cart = cart.get_quantity(product.pk)
+        context['quantity'] = quantity_in_cart
 
         if self.request.user.is_authenticated:
             if OrderItem.objects.filter(product=product, order__user=self.request.user, order__status='completed').exists():
@@ -99,8 +103,9 @@ class ProductDetailView(DetailView):
             if product.reviews.filter(user=self.request.user).exists():
                 context['already_reviewed'] = True
 
-        # context['related_products'] = Product.objects.filter(category=product.category).exclude(pk=product.pk).prefetch_related('category')
+        # context['related_products'] = Product.objects.filter(category=product.category).
+        #       exclude(pk=product.pk).prefetch_related('category')
         context['categories'] = Category.objects.filter(parent=None).prefetch_related('children')
         return context
 
-# TODO: пейджинг, сток на карточке товаров, оставление отзыва и т.д.
+# TODO: пейджинг, оставление отзыва и т.д.

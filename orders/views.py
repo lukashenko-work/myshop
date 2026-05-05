@@ -50,7 +50,7 @@ class CartAddViewAJAX(View):
         quantity = quantity_in_cart + quantity_todo
 
         if quantity < 0 or quantity > product.stock:
-            msg = f'Недопустимое количество. В наличии {product.stock} шт.'
+            msg = f'К заказу доступно только {product.stock} шт.'
             return JsonResponse({'success': False, 'message': msg, 'quantity': quantity_in_cart}, status=200)
 
         if quantity == 0 and quantity_todo < 0:

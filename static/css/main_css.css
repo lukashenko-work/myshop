@@ -1142,7 +1142,11 @@ body.user-logged-in .header__user-actions {
 }
 
 .is-hidden {
-    display: none !important;
+    /* display: none !important; */
+    display: none;
+}
+.just-hidden {
+    visibility: hidden;
 }
 
 .quantity-counter {

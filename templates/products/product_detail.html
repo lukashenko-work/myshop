@@ -52,26 +52,17 @@
         {% if product.stock > 0 %}
         <div class="cart-controls">
           <div style="padding-bottom: 8px;">Доступно к заказу: {{ product.stock }} ед.</div>
-          <button onclick="addToCartTest(event, {{ product.id }});">ADD</button>
-          <script>
-            function addToCartTest(event, productId) {
-                event.stopPropagation();
-                event.preventDefault();
-                alert(productId);
-            }
-            
-          </script>
           <form action="{% url 'orders:cart_add' product.id %}" method="post">
             {% csrf_token %}
-            <button type="button" class="button button--primary add-to-cart-button" onclick="addToCartButton(event);" id="add-to-cart-btn1">
+            <button type="button" class="button button--primary add-to-cart-button is-hidden" onclick="addToCart(event);" id="addToCartButton">
               <i class="fa-solid fa-cart-shopping"></i>
               <span>Add to Cart</span>
             </button>
           </form>
-          <div class="quantity-counter is-hidden">
-            <button class="quantity-btn" aria-label="Decrease quantity" onclick="decreaseCartButton(event);"><i class="fa-solid fa-minus"></i></button>
-            <span class="quantity-value">1 in cart</span>
-            <button class="quantity-btn" aria-label="Increase quantity" onclick="increaseCartButton(event);"><i class="fa-solid fa-plus"></i></button>
+          <div class="quantity-counter is-hidden" id="quantityCounter">
+            <button class="quantity-btn" aria-label="Decrease quantity" onclick="decreaseCart(event);"><i class="fa-solid fa-minus"></i></button>
+            <span class="quantity-value" id="quantityValue">1 in cart</span>
+            <button id="increaseButton" class="quantity-btn" aria-label="Increase quantity" onclick="increaseCart(event);"><i class="fa-solid fa-plus"></i></button>
           </div>
         </div>
           {% else %}
@@ -80,35 +71,35 @@
       </div>
     </section>
 <script>
-  function addToCartButton(event) {
-    addToCart(event, true);
+  function addToCart(event) {
+    changeCartQuantity(event, true);
   }
   
-  function increaseCartButton(event) {
-    addToCart(event, true);
+  function increaseCart(event) {
+    changeCartQuantity(event, true);
   }
-  function decreaseCartButton(event) {
-    addToCart(event, false);
+  function decreaseCart(event) {
+    changeCartQuantity(event, false);
   }
 
-  function addToCart(event, increase) {
+  function changeCartQuantity(event, increase) {
     //event.stopPropagation();
     event.preventDefault();
-    const myButton = document.getElementById('add-to-cart-btn1');
-    //myButton.addEventListener('click', function() {
+    const myButton = document.getElementById("addToCartButton");
+    //myButton.addEventListener("click", function() {
     const url = "{% url 'orders:cart_addAJAX' product.id %}";
-    const csrfToken = '{{csrf_token}}';
+    const csrfToken = "{{csrf_token}}";
     let quantity = 1;
     if (!increase) {
       quantity = -1;
     }
 
     fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json', // ОБЯЗАТЕЛЬНО
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRFToken': csrfToken
+              "Content-Type": "application/json", // ОБЯЗАТЕЛЬНО
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRFToken": csrfToken
             },
             body: JSON.stringify({
               quantity: quantity,
@@ -118,43 +109,53 @@
       if (response.ok) {
         return response.json()
       } else {
-        showNotification('Ошибка добавления в корзину')
+        showNotification("Ошибка добавления в корзину")
       }
     })
     .then(data => {
-      const addToCartBtn = document.getElementById('add-to-cart-btn1');
-      const quantityCounter = document.querySelector('.quantity-counter');
-      const quantityValueSpan = document.querySelector('.quantity-value');
+      showQuantityControls(data.quantity);
       showNotification(data.message);
-      quantity = data.quantity;
-      if (quantity === 0) {
-        addToCartBtn.classList.remove('is-hidden');
-        quantityCounter.classList.add('is-hidden');
-      } else if (quantity > 0) {
-        addToCartBtn.classList.add('is-hidden');
-        quantityCounter.classList.remove('is-hidden');
-        quantityValueSpan.textContent = `${quantity} in cart`;
-      } else {
-        addToCartBtn.classList.add('is-hidden');
-        quantityCounter.classList.add('is-hidden');
-      }
     })
-    .catch(err => console.error('Error:', err));
+    .catch(err => console.error("Error:", err));
+  }
+
+  function showQuantityControls(quantity) {
+    const addToCartBtn = document.getElementById("addToCartButton");
+    const increaseBtn = document.getElementById("increaseButton");
+    const quantityCounter = document.getElementById("quantityCounter");
+    const quantityValueSpan = document.getElementById("quantityValue");
+
+    if (quantity === 0) {
+      addToCartBtn.classList.remove("is-hidden");
+      quantityCounter.classList.add("is-hidden");
+    } else if (quantity > 0) {
+      addToCartBtn.classList.add("is-hidden");
+      quantityCounter.classList.remove("is-hidden");
+      quantityValueSpan.textContent = `В корзине: ${quantity} ед.`;
+      if (quantity >= {{ product.stock }}) {
+        increaseBtn.classList.add("just-hidden");
+      } else {
+        increaseBtn.classList.remove("just-hidden");
+      }
+    } else if (data.quantity > 0) {
+      addToCartBtn.classList.add("is-hidden");
+      quantityCounter.classList.remove("is-hidden");
+    }
   }
 
   function showNotification(text) {
     // 1. Создаем элемент
-    const msg = document.createElement('div');
-    msg.className = 'alert-message';
+    const msg = document.createElement("div");
+    msg.className = "alert-message";
     msg.innerText = text;
     document.body.appendChild(msg);
 
     // 2. Делаем его видимым (с небольшой задержкой для срабатывания CSS transition)
-    setTimeout(() => msg.classList.add('show'), 10);
+    setTimeout(() => msg.classList.add("show"), 10);
 
     // 3. Через 3 секунды начинаем исчезновение
     setTimeout(() => {
-        msg.classList.remove('show');
+        msg.classList.remove("show");
         
         // 4. После завершения анимации (0.5с) полностью удаляем из DOM
         setTimeout(() => msg.remove(), 500);
@@ -242,4 +243,7 @@
     </section>
   </div>
 </main>
+<script>
+  showQuantityControls({{quantity}});
+</script>
 {% endblock %}
