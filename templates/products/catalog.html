@@ -21,8 +21,8 @@
         <h3 class="section-title">Product Type</h3>
         <div class="checkbox-group">
           {% for category in categories %}
-          <label class="checkbox-container">{{category.name}}
-            <input type="radio" name="category" value="{{category.slug}}" {% if current_category == category.slug %}checked{% endif %}>
+          <label class="checkbox-container">{{ category.name }}
+            <input type="radio" name="category" value="{{ category.slug }}" {% if current_category == category.slug %}checked{% endif %}>
             <span class="checkmark"></span>
           </label>
           {% for child in category.children.all %}
@@ -34,24 +34,7 @@
           {% endfor %}
         </div>
 
-<style>
-  .price-row { display: flex; gap: 8px; align-items: center; }
-  .price-input {
-    width: 100%; padding: 8px 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border-default);
-    border-radius: 8px; color: var(--cream);
-    font-size: .9rem; outline: none;
-    transition: border-color .2s;
-    text-align: right;
-    background-color: var(--background-grey);
-  }
-  .price-input:focus { border-color: var(--green); }
-  .price-sep { color: var(--muted); flex-shrink: 0; font-size: .85rem; }
-</style>    
-
-    
-      <!-- Price -->
+        <!-- Price -->
         <h3>Price range</h3>
         <div class="price-row">
           <input class="price-input" type="number" name="min_price" placeholder="min" value="{{ min_price }}" min="0">
@@ -59,7 +42,12 @@
           <input class="price-input" type="number" name="max_price" placeholder="max" value="{{ max_price }}" min="0">
         </div>
 
-
+        <!-- Stock -->
+        <h3>Stock</h3>
+        <label class="checkbox-container">Only in stock
+          <input type="checkbox" name="stock" value="stock" {% if current_stock == 'stock' %}checked{% endif %}>
+          <span class="checkmark"></span>
+        </label>
       </div>
       <button type="submit" class="sort-button active-sort" aria-label="Apply">Применить</button>
 

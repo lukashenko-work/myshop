@@ -335,6 +335,33 @@ header {
 }
 
 /* Search & Sort Bar */
+.price-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.price-input {
+    width: 100%; padding: 8px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border-default);
+    border-radius: 8px; color: var(--cream);
+    font-size: .9rem; outline: none;
+    transition: border-color .2s;
+    text-align: right;
+    background-color: var(--background-grey);
+}
+
+.price-input:focus {
+    border-color: var(--green);
+}
+
+.price-sep {
+    color: var(--muted);
+    flex-shrink: 0;
+    font-size: .85rem;
+}
+
 .search-sort-bar {
     width: 100%;
     display: flex;

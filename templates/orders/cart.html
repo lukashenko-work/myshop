@@ -31,7 +31,7 @@
               <div class="cart-item__quantity-selector">
                 <button class="quantity-btn-cart" id="decreaseButtonCart_{{ item.product.id }}" onclick="decreaseCart(event, {{ item.product.id }}, {{ item.product.stock }});"><i class="fa-solid fa-minus"></i></button>
                 <span class="quantity-value-cart" id="quantityValueCart_{{ item.product.id }}">{{ item.quantity }}</span>
-                <button class="quantity-btn-cart" id="increaseButtonCart_{{ item.product.id }}" onclick="increaseCart(event, {{ item.product.id }}, {{ item.product.stock }});"><i class="fa-solid fa-plus"></i></button>
+                <button class="quantity-btn-cart {% if item.quantity >= item.product.stock %}just-hidden{% endif %}" id="increaseButtonCart_{{ item.product.id }}" onclick="increaseCart(event, {{ item.product.id }}, {{ item.product.stock }});"><i class="fa-solid fa-plus"></i></button>
               </div>
               <p class="cart-item__price-total" id="cartItemPriceTotal_{{ item.product.id }}">{{item.total_price}} ₽</p>
               <form method="post" action="{% url 'orders:cart_remove' item.product.id %}">
@@ -148,8 +148,4 @@
     {% endif %}
   </div>
 </main>
-<script>
-  //TODO: убрать лишние + - у товаров, в зависимости от стока
-  //showQuantityControls({{quantity}});
-</script>
 {% endblock %}

@@ -23,6 +23,11 @@ class ProductListView(ListView):
             # Считаем количество связанных отзывов
             reviews_count=Count('reviews'))
 
+        # Filter by stock only
+        stock_only = self.request.GET.get('stock')
+        if stock_only:
+            qs = qs.filter(stock__gt=0)
+
         # Filter by category if provided
         category_slug = self.request.GET.get('category')
         if category_slug:
@@ -70,6 +75,7 @@ class ProductListView(ListView):
         context['current_q'] = self.request.GET.get('q')
         context['min_price'] = self.request.GET.get('min_price')
         context['max_price'] = self.request.GET.get('max_price')
+        context['current_stock'] = self.request.GET.get('stock')
         return context
 
 
