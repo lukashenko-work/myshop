@@ -2,6 +2,9 @@ from typing import Any, cast
 
 # from django.shortcuts import render
 from django.db.models import Avg, Count, F, Q, QuerySet
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render
+from django.views import View
 from django.views.generic import DetailView, ListView
 
 from orders.cart import Cart
@@ -113,5 +116,12 @@ class ProductDetailView(DetailView):
         #       exclude(pk=product.pk).prefetch_related('category')
         context['categories'] = Category.objects.filter(parent=None).prefetch_related('children')
         return context
+
+
+class RecipesView(View):
+    template_name = 'products/guides-recipes.html'
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return render(request, self.template_name)
 
 # TODO: пейджинг, оставление отзыва и т.д.
