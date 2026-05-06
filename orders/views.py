@@ -83,14 +83,6 @@ class CartView(TemplateView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         cart = Cart(self.request)
-
-        # TODO: Убрать этот код
-        # products = Product.objects.all()
-        # i = 1
-        # for product in products:
-        #     cart.add(product, i, override=True)
-        #     i += 1
-        # -----------------------
         context['cart'] = cart
         context['total'] = cart.get_total_price()
         return context

@@ -26,7 +26,6 @@
                 </div>
               </a>
             </div>
-            <!--TODO: реализовать увеличение и уменьшение количества товара в корзине-->
             <div>Доступно к заказу: {{ item.product.stock }} ед.</div>
             <div class="cart-item__actions">
               <div class="cart-item__quantity-selector">
@@ -112,7 +111,7 @@
           }
         }
       }
-//TODO^: изменение суммы за товар и тотал корзины
+
       function updateCartTotal(quantity, productId) {
         const cartItemPriceElement = document.getElementById("cartItemPrice_" + productId);
         const itemPriceTotalElement = document.getElementById("cartItemPriceTotal_" + productId);
@@ -143,43 +142,6 @@
         cartTotalCountElement.innerText = `Всего товаров ${ totalCount } шт.`;
         cartTotalPriceElement.innerText = `на сумму ${ totalSum.toFixed(2) } ₽`;
       }
-
-      {% comment %} 
-      const cartItemsList = document.getElementById('cart-items-list');
-      const cartTotalPriceElem = document.getElementById('cart-total-price');
-      function updateCartTotal() {
-          let total = 0;
-          document.querySelectorAll('.cart-item').forEach(item => {
-              const priceText = item.querySelector('[data-item-total-price]').textContent;
-              if (priceText) {
-                  total += parseFloat(priceText.replace('$', ''));
-              }
-          });
-          if (cartTotalPriceElem) cartTotalPriceElem.textContent = `$${total.toFixed(2)}`;
-      }
-      if (cartItemsList) {
-          cartItemsList.addEventListener('click', function(event) {
-              const cartItem = event.target.closest('.cart-item');
-              if (!cartItem) return;
-              const quantityElem = cartItem.querySelector('.quantity-value-cart');
-              const itemTotalElem = cartItem.querySelector('[data-item-total-price]');
-              const basePrice = parseFloat(cartItem.dataset.price);
-              let quantity = parseInt(quantityElem.textContent);
-              if (event.target.closest('[data-action="increase"]')) {
-                  quantity++;
-              } else if (event.target.closest('[data-action="decrease"]')) {
-                  quantity = quantity > 1 ? quantity - 1 : 0;
-              }
-              if (event.target.closest('[data-action="remove"]') || quantity === 0) {
-                  cartItem.remove();
-              } else {
-                  quantityElem.textContent = quantity;
-                  itemTotalElem.textContent = `$${(basePrice * quantity).toFixed(2)}`;
-              }
-              updateCartTotal();
-          });
-      }
-      updateCartTotal();{% endcomment %}
     </script>
     {% else %}
       <p class="cart-empty">Корзина пуста. Добавьте товары из <a href="{% url 'products:catalog' %}">Каталога</a></p>
@@ -187,6 +149,7 @@
   </div>
 </main>
 <script>
+  //TODO: убрать лишние + - у товаров, в зависимости от стока
   //showQuantityControls({{quantity}});
 </script>
 {% endblock %}

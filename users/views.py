@@ -1,7 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views import View
+from django.views.generic import ListView
+
+from orders.models import Order
 
 from .forms import LoginForm, RegisterForm
 
@@ -66,3 +69,14 @@ class UserForgot(View):
 
     def post(self, request: HttpRequest) -> HttpResponse:
         return redirect('users:login')
+
+
+class UserOrderHistory(ListView):
+    model = Order
+    template_name = 'users/history.html'
+    context_object_name = 'orders'
+    paginate_by = 8
+
+    def get_queryset(self):
+        qs = Order.objects.filter(user=self.request.user).order_by('-created_at')
+        return qs

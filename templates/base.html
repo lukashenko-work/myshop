@@ -46,7 +46,7 @@
       <!-- Block for authorized user -->
       <p>Вы вошли как: {{ user.username }} {{ user.email }} {{user.profile.phone_number}}</p>
       <div class="header__user-actions" id="auth-user">
-        <a href="account.html" class="user-icon" aria-label="My Account">
+        <a href="{% url 'users:history' %}" class="user-icon" aria-label="My Account">
           <img src="{% static "img/icons/User_alt.svg" %}" alt="User Account">
         </a>
         <a href="{% url 'orders:cart' %}" class="cart-icon" aria-label="Shopping Cart">
