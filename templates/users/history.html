@@ -9,11 +9,8 @@
       <button class="account-tab active" data-tab-target="#order-history">Order History</button>
       <button class="account-tab" data-tab-target="#account-info">Account Information</button>
     </div>
-    {% for order in orders %}
-    <p>{{ order }}
+    <!-- TODO: Реализовать просмотр деталей заказа -->
       {% comment %} <a href="{% url "users:order" order.id %}">{{ order }}</a> {% endcomment %}
-    </p>
-    {% endfor %}
     <!-- Tabs Content -->
     <div class="tab-content">
       <!-- Order History Panel -->
@@ -27,105 +24,21 @@
           </div>
           <!-- Table Body -->
           <div class="order-table-body">
-            <!-- Example Row 1 -->
+            {% for order in orders %}
             <div class="order-table-row">
               <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
+                <span class="order-id">#{{ order.id }}</span>
+                <span class="order-date">{{ order.created_at|date:"j E Y, H:i"}}</span>
               </div>
               <div class="order-table-cell">
-                <span class="order-status">Pending</span>
+                <span class="order-status">{{ order.get_status_display }}</span>
               </div>
               <div class="order-table-cell">
-                <span class="order-total">$100.00</span>
+                <span class="order-total">{{ order.total_price}}  ₽</span>
               </div>
             </div>
-            <!-- Example Row 2 -->
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Pending</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$90.00</span>
-              </div>
-            </div>
+            {% endfor %}
             <!-- ... add more rows as needed ... -->
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Confirmed</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$140.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Delivered</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Shipped</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Shipped</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Shipped</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Shipped</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
           </div>
         </div>
         <!-- Pagination (simplified) -->
@@ -161,7 +74,7 @@
               <textarea id="acc-address" name="address" class="Textarea" placeholder="Value" rows="3" required></textarea>
             </div>
             <button type="submit" class="button button--primary button--full-width">Save</button>
-            <a href="#" class="button button--secondary button--full-width" id="logout-button">Logout</a>
+            <a href="{% url 'users:logout' %}" class="button button--secondary button--full-width" id="logout-button">Logout</a>
           </form>
         </div>
       </div>
