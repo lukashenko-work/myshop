@@ -21,19 +21,20 @@
               <a href="{% url "products:product" slug=item.product.slug %}" class="product-card-link">
                 <h2 class="cart-item__name">{{item.product.name}}</h2>
                 <div class="cart-item__price-info">
-                  <p class="cart-item__price">{{item.price}} ₽</p>
+                  <p class="cart-item__price" id="cartItemPrice_{{ item.product.id }}">{{item.price}} ₽</p>
                   <span class="cart-item__price-tag">за {{item.product.weight|floatformat:0}} {{item.product.unit}}</span>
                 </div>
               </a>
             </div>
             <!--TODO: реализовать увеличение и уменьшение количества товара в корзине-->
+            <div>Доступно к заказу: {{ item.product.stock }} ед.</div>
             <div class="cart-item__actions">
               <div class="cart-item__quantity-selector">
-                <button class="quantity-btn-cart" data-action="decrease"><i class="fa-solid fa-minus"></i></button>
-                <span class="quantity-value-cart">{{item.quantity}}</span>
-                <button class="quantity-btn-cart" data-action="increase"><i class="fa-solid fa-plus"></i></button>
+                <button class="quantity-btn-cart" id="decreaseButtonCart_{{ item.product.id }}" onclick="decreaseCart(event, {{ item.product.id }}, {{ item.product.stock }});"><i class="fa-solid fa-minus"></i></button>
+                <span class="quantity-value-cart" id="quantityValueCart_{{ item.product.id }}">{{ item.quantity }}</span>
+                <button class="quantity-btn-cart" id="increaseButtonCart_{{ item.product.id }}" onclick="increaseCart(event, {{ item.product.id }}, {{ item.product.stock }});"><i class="fa-solid fa-plus"></i></button>
               </div>
-              <p class="cart-item__price-total">{{item.total_price}} ₽</p>
+              <p class="cart-item__price-total" id="cartItemPriceTotal_{{ item.product.id }}">{{item.total_price}} ₽</p>
               <form method="post" action="{% url 'orders:cart_remove' item.product.id %}">
                 {% csrf_token %}
                 <button class="button--remove" type="submit">
@@ -47,14 +48,145 @@
       </div>
       <div class="cart-summary">
         <div class="cart-summary__total">
-          <p>Всего товаров {{ cart|length }} шт.</p>
-          <p id="cart-total-price">на сумму {{ total }} ₽</p>
+          <p id="cartTotalCount">Всего товаров {{ cart|length }} шт.</p>
+          <p id="cartTotalPrice">на сумму {{ total }} ₽</p>
         </div>
         <a href="{% url "orders:checkout" %}" class="button button--primary button--checkout">Proceed to Checkout</a>
       </div>
+    <script>
+      function increaseCart(e, productId, stock) {
+        changeCartQuantity(e, productId, stock, true);
+      }
+      function decreaseCart(e, productId, stock) {
+        changeCartQuantity(e, productId, stock, false);
+      }
+
+      function changeCartQuantity(e, productId, stock, increase) {
+        e.preventDefault();
+        const urlTemplate = "{% url 'orders:cart_addAJAX' 0 %}";
+        const url = urlTemplate.replace("0", productId);
+        const csrfToken = "{{csrf_token}}";
+        let quantity = (increase) ? 1 : -1;
+        fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", // ОБЯЗАТЕЛЬНО
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({
+              quantity: quantity,
+            })
+        })
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          } else {
+            showNotification("Ошибка добавления в корзину")
+          }
+        })
+        .then(data => {
+          showQuantityControls(data.quantity, productId, stock);
+          updateCartTotal(data.quantity, productId);
+          showNotification(data.message);
+        })
+        .catch(err => console.error("Error:", err));
+      }
+
+      function showQuantityControls(quantity, productId, stock) {
+        const increaseBtn = document.getElementById(`increaseButtonCart_${productId}`);
+        const decreaseBtn = document.getElementById(`decreaseButtonCart_${productId}`);
+        const quantityValueSpan = document.getElementById(`quantityValueCart_${productId}`);
+
+        if (quantity >= 0) {
+          quantityValueSpan.textContent = quantity;
+          if (quantity === 0) {
+            decreaseBtn.classList.add("just-hidden");
+          } else {
+            decreaseBtn.classList.remove("just-hidden");
+          }
+          if (quantity >= stock) {
+            increaseBtn.classList.add("just-hidden");
+          } else {
+            increaseBtn.classList.remove("just-hidden");
+          }
+        }
+      }
+//TODO^: изменение суммы за товар и тотал корзины
+      function updateCartTotal(quantity, productId) {
+        const cartItemPriceElement = document.getElementById("cartItemPrice_" + productId);
+        const itemPriceTotalElement = document.getElementById("cartItemPriceTotal_" + productId);
+        const cartTotalPriceElement = document.getElementById("cartTotalPrice");
+        const cartTotalCountElement = document.getElementById("cartTotalCount");
+
+        price = parseFloat(cartItemPriceElement.innerText);
+        itemPriceTotalElement.innerText = (quantity*price).toFixed(2) + " ₽";
+
+        let totalSum = 0;
+        let totalCount = 0;
+        const priceTotalElements = document.querySelectorAll('[id^="cartItemPriceTotal_"]');
+        priceTotalElements.forEach(el => {
+          const productId = el.id.split('_')[1];
+          // Очищаем текст от рублей, пробелов и превращаем в число
+          // parseFloat поймет "1000.50 ₽" как 1000.5
+          let price = parseFloat(el.innerText); 
+          
+          if (!isNaN(price)) {
+              totalSum += price;
+          }
+          const qtyEl = document.getElementById(`quantityValueCart_${productId}`);
+          if (qtyEl) {
+            const qty = parseInt(qtyEl.innerText) || 0;
+            totalCount += qty;
+          }
+        });
+        cartTotalCountElement.innerText = `Всего товаров ${ totalCount } шт.`;
+        cartTotalPriceElement.innerText = `на сумму ${ totalSum.toFixed(2) } ₽`;
+      }
+
+      {% comment %} 
+      const cartItemsList = document.getElementById('cart-items-list');
+      const cartTotalPriceElem = document.getElementById('cart-total-price');
+      function updateCartTotal() {
+          let total = 0;
+          document.querySelectorAll('.cart-item').forEach(item => {
+              const priceText = item.querySelector('[data-item-total-price]').textContent;
+              if (priceText) {
+                  total += parseFloat(priceText.replace('$', ''));
+              }
+          });
+          if (cartTotalPriceElem) cartTotalPriceElem.textContent = `$${total.toFixed(2)}`;
+      }
+      if (cartItemsList) {
+          cartItemsList.addEventListener('click', function(event) {
+              const cartItem = event.target.closest('.cart-item');
+              if (!cartItem) return;
+              const quantityElem = cartItem.querySelector('.quantity-value-cart');
+              const itemTotalElem = cartItem.querySelector('[data-item-total-price]');
+              const basePrice = parseFloat(cartItem.dataset.price);
+              let quantity = parseInt(quantityElem.textContent);
+              if (event.target.closest('[data-action="increase"]')) {
+                  quantity++;
+              } else if (event.target.closest('[data-action="decrease"]')) {
+                  quantity = quantity > 1 ? quantity - 1 : 0;
+              }
+              if (event.target.closest('[data-action="remove"]') || quantity === 0) {
+                  cartItem.remove();
+              } else {
+                  quantityElem.textContent = quantity;
+                  itemTotalElem.textContent = `$${(basePrice * quantity).toFixed(2)}`;
+              }
+              updateCartTotal();
+          });
+      }
+      updateCartTotal();{% endcomment %}
+    </script>
     {% else %}
       <p class="cart-empty">Корзина пуста. Добавьте товары из <a href="{% url 'products:catalog' %}">Каталога</a></p>
     {% endif %}
   </div>
 </main>
+<script>
+  //showQuantityControls({{quantity}});
+</script>
 {% endblock %}

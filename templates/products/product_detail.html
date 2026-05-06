@@ -34,13 +34,13 @@
         {% if product.stock > 0 %}
         <div class="cart-controls">
           <div style="padding-bottom: 8px;">Доступно к заказу: {{ product.stock }} ед.</div>
-          <form action="{% url 'orders:cart_add' product.id %}" method="post">
-            {% csrf_token %}
+          {% comment %} <form action="{% url 'orders:cart_add' product.id %}" method="post">
+            {% csrf_token %} {% endcomment %}
             <button type="button" class="button button--primary add-to-cart-button is-hidden" onclick="addToCart(event);" id="addToCartButton">
               <i class="fa-solid fa-cart-shopping"></i>
               <span>Add to Cart</span>
             </button>
-          </form>
+          {% comment %} </form> {% endcomment %}
           <div class="quantity-counter is-hidden" id="quantityCounter">
             <button class="quantity-btn" aria-label="Decrease quantity" onclick="decreaseCart(event);"><i class="fa-solid fa-minus"></i></button>
             <span class="quantity-value" id="quantityValue">1 in cart</span>
@@ -53,28 +53,25 @@
       </div>
     </section>
 <script>
-  function addToCart(event) {
-    changeCartQuantity(event, true);
+  function addToCart(e) {
+    changeCartQuantity(e, true);
   }
   
-  function increaseCart(event) {
-    changeCartQuantity(event, true);
+  function increaseCart(e) {
+    changeCartQuantity(e, true);
   }
-  function decreaseCart(event) {
-    changeCartQuantity(event, false);
+  function decreaseCart(e) {
+    changeCartQuantity(e, false);
   }
 
-  function changeCartQuantity(event, increase) {
-    //event.stopPropagation();
-    event.preventDefault();
+  function changeCartQuantity(e, increase) {
+    //e.stopPropagation();
+    e.preventDefault();
     const myButton = document.getElementById("addToCartButton");
     //myButton.addEventListener("click", function() {
     const url = "{% url 'orders:cart_addAJAX' product.id %}";
     const csrfToken = "{{csrf_token}}";
-    let quantity = 1;
-    if (!increase) {
-      quantity = -1;
-    }
+    let quantity = (increase) ? 1 : -1;
 
     fetch(url, {
             method: "POST",
@@ -125,24 +122,6 @@
     }
   }
 
-  function showNotification(text) {
-    // 1. Создаем элемент
-    const msg = document.createElement("div");
-    msg.className = "alert-message";
-    msg.innerText = text;
-    document.body.appendChild(msg);
-
-    // 2. Делаем его видимым (с небольшой задержкой для срабатывания CSS transition)
-    setTimeout(() => msg.classList.add("show"), 10);
-
-    // 3. Через 3 секунды начинаем исчезновение
-    setTimeout(() => {
-        msg.classList.remove("show");
-        
-        // 4. После завершения анимации (0.5с) полностью удаляем из DOM
-        setTimeout(() => msg.remove(), 500);
-    }, 2000);
-}
   // "Add to Cart" Button and Counter
   /*
   const cartControls = document.querySelector('.cart-controls');

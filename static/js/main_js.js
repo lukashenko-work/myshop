@@ -1,3 +1,22 @@
+function showNotification(text) {
+    // 1. Создаем элемент
+    const msg = document.createElement("div");
+    msg.className = "alert-message";
+    msg.innerText = text;
+    document.body.appendChild(msg);
+
+    // 2. Делаем его видимым (с небольшой задержкой для срабатывания CSS transition)
+    setTimeout(() => msg.classList.add("show"), 10);
+
+    // 3. Через 3 секунды начинаем исчезновение
+    setTimeout(() => {
+        msg.classList.remove("show");
+        
+        // 4. После завершения анимации (0.5с) полностью удаляем из DOM
+        setTimeout(() => msg.remove(), 500);
+    }, 2000);
+}
+  
 document.addEventListener('DOMContentLoaded', function() {
 
     // --- General logic for all pages (Login/Logout Simulation) ---
@@ -132,44 +151,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Logic for Cart Page (cart.html) ---
-    const cartPageContent = document.querySelector('.cart-page-wrapper');
-    if (cartPageContent) {
-        const cartItemsList = document.getElementById('cart-items-list');
-        const cartTotalPriceElem = document.getElementById('cart-total-price');
-        function updateCartTotal() {
-            let total = 0;
-            document.querySelectorAll('.cart-item').forEach(item => {
-                const priceText = item.querySelector('[data-item-total-price]').textContent;
-                if (priceText) {
-                    total += parseFloat(priceText.replace('$', ''));
-                }
-            });
-            if (cartTotalPriceElem) cartTotalPriceElem.textContent = `$${total.toFixed(2)}`;
-        }
-        if (cartItemsList) {
-            cartItemsList.addEventListener('click', function(event) {
-                const cartItem = event.target.closest('.cart-item');
-                if (!cartItem) return;
-                const quantityElem = cartItem.querySelector('.quantity-value-cart');
-                const itemTotalElem = cartItem.querySelector('[data-item-total-price]');
-                const basePrice = parseFloat(cartItem.dataset.price);
-                let quantity = parseInt(quantityElem.textContent);
-                if (event.target.closest('[data-action="increase"]')) {
-                    quantity++;
-                } else if (event.target.closest('[data-action="decrease"]')) {
-                    quantity = quantity > 1 ? quantity - 1 : 0;
-                }
-                if (event.target.closest('[data-action="remove"]') || quantity === 0) {
-                    cartItem.remove();
-                } else {
-                    quantityElem.textContent = quantity;
-                    itemTotalElem.textContent = `$${(basePrice * quantity).toFixed(2)}`;
-                }
-                updateCartTotal();
-            });
-        }
-        updateCartTotal();
-    }
+    // const cartPageContent = document.querySelector('.cart-page-wrapper');
+    // if (cartPageContent) {
+    //     const cartItemsList = document.getElementById('cart-items-list');
+    //     const cartTotalPriceElem = document.getElementById('cart-total-price');
+    //     function updateCartTotal() {
+    //         let total = 0;
+    //         document.querySelectorAll('.cart-item').forEach(item => {
+    //             const priceText = item.querySelector('[data-item-total-price]').textContent;
+    //             if (priceText) {
+    //                 total += parseFloat(priceText.replace('$', ''));
+    //             }
+    //         });
+    //         if (cartTotalPriceElem) cartTotalPriceElem.textContent = `$${total.toFixed(2)}`;
+    //     }
+    //     if (cartItemsList) {
+    //         cartItemsList.addEventListener('click', function(event) {
+    //             const cartItem = event.target.closest('.cart-item');
+    //             if (!cartItem) return;
+    //             const quantityElem = cartItem.querySelector('.quantity-value-cart');
+    //             const itemTotalElem = cartItem.querySelector('[data-item-total-price]');
+    //             const basePrice = parseFloat(cartItem.dataset.price);
+    //             let quantity = parseInt(quantityElem.textContent);
+    //             if (event.target.closest('[data-action="increase"]')) {
+    //                 quantity++;
+    //             } else if (event.target.closest('[data-action="decrease"]')) {
+    //                 quantity = quantity > 1 ? quantity - 1 : 0;
+    //             }
+    //             if (event.target.closest('[data-action="remove"]') || quantity === 0) {
+    //                 cartItem.remove();
+    //             } else {
+    //                 quantityElem.textContent = quantity;
+    //                 itemTotalElem.textContent = `$${(basePrice * quantity).toFixed(2)}`;
+    //             }
+    //             updateCartTotal();
+    //         });
+    //     }
+    //     updateCartTotal();
+    // }
 
     // --- Logic for Account and Admin Pages ---
     const accountAdminWrapper = document.querySelector('.account-page-wrapper, .admin-page-wrapper');
