@@ -47,6 +47,10 @@ class Product(models.Model):
     # Подсказка для Pylance:
     reviews: 'Manager[Review]'
 
+    # Подсказки для IDE (не создают колонки в БД)
+    avg_rating: float | None
+    reviews_count: int
+
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'

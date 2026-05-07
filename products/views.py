@@ -1,4 +1,4 @@
-from typing import Any, cast
+from typing import Any
 
 # from django.shortcuts import render
 from django.db.models import Avg, Count, F, Q, QuerySet
@@ -19,7 +19,7 @@ class ProductListView(ListView):
     context_object_name = 'products'
     paginate_by = 12
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[Product]:
         qs = Product.objects.filter(is_active=True).select_related('category').annotate(
             avg_rating=Avg('reviews__rating'),
             # avg_rating=Coalesce(Avg('reviews__rating'), Value(0.0)))
@@ -84,33 +84,38 @@ class ProductListView(ListView):
 
 class ProductDetailView(DetailView):
     model = Product
+    object: Product
     template_name = 'products/product_detail.html'
     context_object_name = 'product'
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
 
-    def get_queryset(self) -> QuerySet[Any]:
-        return super().get_queryset().filter(is_active=True).select_related('category')
+    def get_queryset(self) -> QuerySet[Product]:
+        return super().get_queryset().filter(is_active=True).annotate(
+                avg_rating=Avg('reviews__rating'),
+                reviews_count=Count('reviews')
+            ).select_related('category')
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        product: Product = cast(Product, self.get_object())
+        # product: Product = cast(Product, self.get_object()) - Вызывает SQL дважды
+        product = self.object
 
-        context['reviews'] = product.reviews.all().prefetch_related('user').order_by('-created_at')[:3]
-        avg_rating = product.reviews.aggregate(Avg('rating'))['rating__avg']
-        reviews_count = product.reviews.count()
+        avg_rating = product.avg_rating
         context['avg_rating'] = round(avg_rating, 1) if avg_rating else None
-        context['reviews_count'] = reviews_count
+        context['reviews_count'] = product.reviews_count
+
         context['max_rating'] = range(5)
         cart = Cart(self.request)
         quantity_in_cart = cart.get_quantity(product.pk)
         context['quantity'] = quantity_in_cart
 
+        context['reviews'] = product.reviews.all().select_related('user').order_by('-created_at')[:3]
+
         if self.request.user.is_authenticated:
-            if OrderItem.objects.filter(product=product, order__user=self.request.user, order__status='completed').exists():
-                context['can_review'] = True
-            if product.reviews.filter(user=self.request.user).exists():
-                context['already_reviewed'] = True
+            context['can_review'] = OrderItem.objects.filter(product=product, order__user=self.request.user,
+                                                             order__status='completed').exists()
+            context['already_reviewed'] = product.reviews.filter(user=self.request.user).exists()
 
         # context['related_products'] = Product.objects.filter(category=product.category).
         #       exclude(pk=product.pk).prefetch_related('category')
