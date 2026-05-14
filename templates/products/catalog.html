@@ -9,9 +9,9 @@
     <img src="{% static "img/background/hopfen-fields.jpg" %}" alt="Beautiful hops on a dark background" class="hero-banner__image">
     <div class="hero-banner__overlay"></div>
   </section>
+  <form method="GET">
   <div class="container main-content-grid">
     <aside class="sidebar filter-menu">
-      <form method="GET">
       <div class="sidebar__section">
         <h3 class="section-title">Keywords</h3>
         <div class="keywords-list"></div>
@@ -37,9 +37,9 @@
         <!-- Price -->
         <h3>Price range</h3>
         <div class="price-row">
-          <input class="price-input" type="number" name="min_price" placeholder="min" value="{{ min_price }}" min="0">
+          <input class="price-input" type="number" name="min_price" placeholder="min" value="{{ min_price|default:'' }}" min="0">
           <span class="price-sep">—</span>
-          <input class="price-input" type="number" name="max_price" placeholder="max" value="{{ max_price }}" min="0">
+          <input class="price-input" type="number" name="max_price" placeholder="max" value="{{ max_price|default:'' }}" min="0">
         </div>
 
         <!-- Stock -->
@@ -114,8 +114,6 @@
             </div>
         </div>
 
-    </form>
-
         <div class="product-grid">
           {% for product in products %}
           <a href="{% url "products:product" slug=product.slug %}" class="product-card-link">
@@ -134,12 +132,12 @@
                 <div class="product-card__price_info">
                   <span class="product-card__price">{{ product.price }} ₽</span>
                   {% if product.stock == 0 %}
-                  <span class="product-card__price_stock out-of-stock">Out of stock</span>
+                  <span class="out-of-stock">Out of stock</span>
                   {% else %}
-                  <span class="product-card__price_out stock-tag">Доступно: {{ product.stock }}</span>
+                  <span class="stock-tag">Доступно: {{ product.stock }}</span>
                   {% endif %}
                 </div>
-                <p class="product-card__description">{{ product.description|truncatechars:30}}</p>
+                <p class="product-card__description">{{ product.description }}</p>
               </div>
             </div>
           </a>
@@ -164,6 +162,7 @@
             </a>
         </div>
     </section>
-    </div>
+  </div>
+</form>
 </main>    
 {% endblock %}

@@ -47,11 +47,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
+# Укажите имя вашего URL-паттерна для страницы логина
+LOGIN_URL = 'users:login'
+# Куда перенаправлять пользователя, если он зашел на страницу логина 
+# напрямую (а не через редирект с защищенной страницы)
+LOGIN_REDIRECT_URL = 'products:catalog'
+
 INSTALLED_APPS += [
     'products',
     'orders',
     'users',
-    'reviews'
+    'reviews',
+    'api',
 ]
 
 MIDDLEWARE = [

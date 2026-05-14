@@ -8,6 +8,9 @@ uv init  --python 3.11
 uv add django
 uv add django-debug-toolbar
 uv add pillow
+uv add djangorestframework
+uv add django-filter
+
 
 django-admin startproject core .
 

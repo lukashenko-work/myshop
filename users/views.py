@@ -1,6 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
+from django.utils.http import \
+    url_has_allowed_host_and_scheme  # Для безопасности
 from django.views import View
 from django.views.generic import ListView
 
@@ -35,6 +38,7 @@ class UserLogin(View):
 
     def post(self, request: HttpRequest) -> HttpResponse:
         form = LoginForm(request.POST)
+
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
@@ -49,6 +53,19 @@ class UserLogin(View):
                 else:
                     # Сессия удалится сразу после закрытия вкладки/браузера
                     request.session.set_expiry(0)
+                # 1. Забираем 'next' напрямую из POST запроса, игнорируя форму
+                next_url = request.POST.get('next')
+
+                # 2. Проверяем URL на безопасность (чтобы редирект был внутри нашего сайта)
+                is_safe = url_has_allowed_host_and_scheme(
+                    url=next_url,
+                    allowed_hosts={request.get_host()},
+                    require_https=request.is_secure()
+                )
+                # 3. Если 'next' есть и он безопасен — редиректим туда, иначе — в дефолтный каталог
+                if next_url and is_safe:
+                    return redirect(next_url)
+
                 return redirect('products:catalog')
             else:
                 form.add_error(None, "Неверный email или пароль")
@@ -71,12 +88,11 @@ class UserForgot(View):
         return redirect('users:login')
 
 
-class UserOrderHistory(ListView):
+class UserOrderHistory(LoginRequiredMixin, ListView):
     model = Order
     template_name = 'users/history.html'
     context_object_name = 'orders'
     paginate_by = 8
 
     def get_queryset(self):
-        qs = Order.objects.filter(user=self.request.user).order_by('-created_at')
-        return qs
+        return super().get_queryset().filter(user=self.request.user).order_by('-created_at')

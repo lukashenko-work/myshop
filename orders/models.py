@@ -1,6 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Manager
-from django.contrib.auth import get_user_model
 
 from products.models import Product
 
@@ -16,6 +16,12 @@ class Order(models.Model):
         DELIVERED = 'delivered', 'Доставлен'
         COMPLETED = 'completed', 'Завершен'
         CANCELLED = 'cancelled', 'Отменен'
+
+    # TODO: реализовать хранение метода оплаты
+    class PaymentMethod(models.TextChoices):
+        CARD = 'card', 'Банковская карта'
+        WALLET = 'wallet', 'Электронный кошелек'
+        CASH = 'cash', 'Наличные при получении'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', verbose_name='Пользователь')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING, verbose_name='Статус')

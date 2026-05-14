@@ -1,14 +1,18 @@
 {
     "cSpell.words": [
+        "addopts",
         "checkmark",
         "cpus",
         "endfor",
+        "filterset",
         "floatformat",
         "forloop",
         "hopfen",
         "myshop",
         "onclick",
+        "pytest",
         "truncatechars",
+        "viewsets",
         "xmark"
     ],
 

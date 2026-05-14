@@ -366,14 +366,20 @@ header {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     margin-bottom: 48px;
+    flex-wrap: wrap;       /* РАЗРЕШАЕТ кнопкам переноситься на новую строку */
+    gap: 16px;             /* Отступ между поиском и кнопками */
+    align-items: center;   /* Выравнивание по вертикали */
 }
 
 .search-input-wrapper {
-    flex: 1 1 0;
-    max-width: 327px;
-    position: relative;
+    position: relative; /* КРИТИЧЕСКИ ВАЖНО: удерживает кнопку внутри поля поиска */
+    display: flex;
+    flex: 0 0 300px;       /* КРИТИЧЕСКИ ВАЖНО: */
+                       /* 1 (flex-grow) - поиск растянется на всю ширину, если он один в ряду */
+                           /* 0 (flex-shrink) - поиск НИКОГДА не сожмется меньше своей базы */
+                           /* 300px (flex-basis) - идеальная минимальная ширина поиска */
+    min-width: 0;          /* Безопасное сжатие инпута внутри обертки */
 }
 
 .search-input {
@@ -393,6 +399,7 @@ header {
 }
 
 .search-button {
+    
     position: absolute;
     right: 16px;
     top: 50%;
@@ -407,7 +414,9 @@ header {
 
 .sort-options {
     display: flex;
-    gap: 8px;
+    flex-wrap: wrap;       /* Позволяет самим кнопкам переноситься, если экран совсем узкий */
+    gap: 8px;              /* Отступы между кнопками сортировки */
+    flex: 1 1 auto;        /* Кнопки гибко занимают оставшееся место */
 }
 
 .sort-button {
@@ -422,6 +431,7 @@ header {
     align-items: center;
     gap: 8px;
     cursor: pointer;
+    white-space: nowrap;   /* Запрещает тексту внутри кнопок переноситься в две строки */
 }
 
 .sort-button.active-sort {
@@ -434,7 +444,15 @@ header {
 .product-grid {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    /* grid-template-columns: repeat(3, 1fr); */
+    /* ИСПРАВЛЕНО: minmax(0, 1fr) вместо 1fr решает проблему распирания колонок */
+    /* grid-template-columns: repeat(3, minmax(0, 1fr)); */
+    /* 
+       auto-fill: браузер сам создаст столько колонок, сколько поместится.
+       280px: минимальная ширина одной карточки (отлично для мобильных).
+       1fr: карточки растянутся и поделят всю оставшуюся ширину поровну.
+    */
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
     gap: 32px;
 }
 
@@ -479,6 +497,7 @@ header {
     justify-content: space-between; /* Расталкиваем содержимое по краям */
     align-items: flex-start;       /* Выравниваем по вертикали (по верхнему краю)*/
     gap: 10px;                 /* Отступ, если название слишком длинное */
+    min-width: 0; /* ИСПРАВЛЕНО: разрешает флекс-контейнеру заголовка сжиматься */
 }
 
 .product-rating {
@@ -487,6 +506,15 @@ header {
     color: #FFC107;            /* Можно сразу подкрасить рейтинг */
     font-weight: bold;
     flex-shrink: 0;                 /* Не дает рейтингу сжиматься */
+    display: block; /* По умолчанию отзывы видны */
+}
+
+/* 5. Умное скрытие отзывов при сильном сжатии карточки */
+/* Если ширина карточки становится меньше 240px, скрываем отзывы */
+@container (max-width: 200px) {
+    .product-rating {
+        display: none;
+    }
 }
 
 .product-title {
@@ -494,12 +522,17 @@ header {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    flex: 1;      /* ИСПРАВЛЕНО: занимает всю ширину до рейтинга */
+    min-width: 0; /* ИСПРАВЛЕНО: разрешает обрезку текста внутри span */
 }
 
 .product-card__price_info {
     display: flex;
-    justify-content: space-between; /* Расталкиваем содержимое по краям */
-    gap: 10px;
+    justify-content: space-between; /* Расталкивает цену и остаток по краям */
+    align-items: center;            /* Выравнивает их по вертикали */
+    gap: 12px;                      /* Безопасный отступ между ними */
+    width: 100%;
+    min-width: 0;                   /* КРИТИЧЕСКИ ВАЖНО: позволяет контейнеру сжиматься */
 }
 
 .product-card__price_stock {
@@ -512,12 +545,27 @@ header {
     font-weight: 600;
     line-height: 1.4;
     color: var(--black-main);
+    /* НАСТРОЙКИ: */
+    white-space: nowrap;            /* Запрещает перенос */
+    flex-shrink: 0;                 /* Цена в приоритете, она не должна сжиматься */
 }
 
 .product-card__description {
+    margin: 0;
     font-size: 14px;
     line-height: 1.4;
     color: var(--grey-text);
+
+    /* НАСТРОЙКИ ОБРЕЗКИ ЧЕРЕЗ CSS: */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;           /* Количество строк, после которого текст обрежется */
+    -webkit-box-orient: vertical;
+    line-clamp: 2;         /* СТАНДАРТНОЕ СВОЙСТВО: для полной совместимости */
+    overflow: hidden;                /* Прячет весь текст, который не поместился */
+    text-overflow: ellipsis;         /* Добавляет троеточие (...) */
+    
+    /* Дополнительная безопасность для сетки: */
+    height: calc(14px * 1.4 * 2);    /* Фиксированная высота (font-size * line-height * количество строк) */
 }
 
 /* Pagination */
@@ -637,7 +685,9 @@ footer {
 
 /* Link wrapper for product cards */
 .product-card-link {
+    min-width: 0; /* КРИТИЧЕСКИ ВАЖНО: сбрасывает min-width: auto для элемента грида */
     text-decoration: none;
+    container-type: inline-size; /* Позволяет дочерним элементам реагировать на ширину карточки */
 }
 
 
@@ -1179,6 +1229,11 @@ body.user-logged-in .header__user-actions {
     border-radius: 8px;
     align-self: flex-start;
     font-weight: 600;
+    /* НАСТРОЙКИ ОБРЕЗКИ: */
+    white-space: nowrap; /* Запрещает перенос текста на новую строку */
+    overflow: hidden;               /* Прячет лишнее */
+    text-overflow: ellipsis;        /* Добавляет троеточие (...) */
+    min-width: 0;                   /* Разрешает тегу сжиматься */
 }
 
 .stock-tag {
@@ -1188,6 +1243,11 @@ body.user-logged-in .header__user-actions {
     border-radius: 8px;
     align-self: flex-start;
     font-weight: 600;
+    /* НАСТРОЙКИ ОБРЕЗКИ: */
+    white-space: nowrap;            /* Запрещает перенос строки "Доступно: 10" */
+    overflow: hidden;               /* Прячет лишнее */
+    text-overflow: ellipsis;        /* Добавляет троеточие (...) */
+    min-width: 0;                   /* Разрешает тегу сжиматься */
 }
 
 .quantity-counter {

@@ -38,47 +38,62 @@
               </div>
             </div>
             {% endfor %}
-            <!-- ... add more rows as needed ... -->
           </div>
         </div>
         <!-- Pagination (simplified) -->
+        {% if is_paginated %}
         <div class="account-pagination">
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link-account">← Previous</a>
+          {% else %}
           <a href="#" class="pagination-link-account disabled">← Previous</a>
-          <a href="#" class="pagination-link-account">Next →</a>
-        </div>
-      </div>
+          {% endif %}
 
-      <!-- Account Information Panel -->
-      <div id="account-info" class="tab-pane">
-        <div class="account-form-container">
-          <h2 class="account-form-title">Personal Info</h2>
-          <form id="account-info-form">
-            <div class="checkout-form-group">
-              <label for="acc-full-name">Full Name</label>
-              <input type="text" id="acc-full-name" name="full_name" class="Input" placeholder="Value" required>
-            </div>
-            <div class="checkout-form-group">
-              <label for="acc-phone">Phone number</label>
-              <input type="tel" id="acc-phone" name="phone" class="Input" placeholder="Value" required>
-            </div>
-            <div class="checkout-form-group">
-              <label for="acc-email">Email</label>
-              <input type="email" id="acc-email" name="email" class="Input" placeholder="example@mail.com" required>
-            </div>
-            <div class="checkout-form-group">
-              <label for="acc-city">City</label>
-              <input type="text" id="acc-city" name="city" class="Input" placeholder="Value" required>
-            </div>
-            <div class="checkout-form-group">
-              <label for="acc-address">Shipping address</label>
-              <textarea id="acc-address" name="address" class="Textarea" placeholder="Value" rows="3" required></textarea>
-            </div>
-            <button type="submit" class="button button--primary button--full-width">Save</button>
-            <a href="{% url 'users:logout' %}" class="button button--secondary button--full-width" id="logout-button">Logout</a>
-          </form>
-        </div>
-      </div>
+          <span class="current-page">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+          </span>
 
+          {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="pagination-link-account">Next →</a>
+          {% else %}
+          <a href="?#" class="pagination-link-account disabled">Next →</a>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Account Information Panel -->
+  <div id="account-info" class="tab-pane">
+    <div class="account-form-container">
+      <h2 class="account-form-title">Personal Info</h2>
+      <form id="account-info-form">
+        <div class="checkout-form-group">
+          <label for="acc-full-name">Full Name</label>
+          <input type="text" id="acc-full-name" name="full_name" class="Input" placeholder="Value" required>
+        </div>
+        <div class="checkout-form-group">
+          <label for="acc-phone">Phone number</label>
+          <input type="tel" id="acc-phone" name="phone" class="Input" placeholder="Value" required>
+        </div>
+        <div class="checkout-form-group">
+          <label for="acc-email">Email</label>
+          <input type="email" id="acc-email" name="email" class="Input" placeholder="example@mail.com" required>
+        </div>
+        <div class="checkout-form-group">
+          <label for="acc-city">City</label>
+          <input type="text" id="acc-city" name="city" class="Input" placeholder="Value" required>
+        </div>
+        <div class="checkout-form-group">
+          <label for="acc-address">Shipping address</label>
+          <textarea id="acc-address" name="address" class="Textarea" placeholder="Value" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="button button--primary button--full-width">Save</button>
+        <a href="{% url 'users:logout' %}" class="button button--secondary button--full-width" id="logout-button">Logout</a>
+      </form>
     </div>
   </div>
 </main>

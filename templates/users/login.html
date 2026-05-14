@@ -36,6 +36,9 @@
             <span class="checkmark"></span>
           </label>
         </div>
+        {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% endif %}
         <div class="ButtonGroup">
           <button type="submit" class="button button--primary">Sign In</button>
         </div>
