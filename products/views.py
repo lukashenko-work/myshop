@@ -17,7 +17,7 @@ class ProductListView(ListView):
     model = Product
     template_name = 'products/catalog.html'
     context_object_name = 'products'
-    paginate_by = 3
+    paginate_by = 9
 
     def get_queryset(self) -> QuerySet[Product]:
         qs = Product.objects.filter(is_active=True).select_related('category').annotate(

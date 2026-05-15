@@ -690,6 +690,10 @@ footer {
     container-type: inline-size; /* Позволяет дочерним элементам реагировать на ширину карточки */
 }
 
+/* Link wrapper for product cards in cart*/
+.product-card-cart-link {
+    text-decoration: none;
+}
 
 /*
 ========================================

@@ -9,7 +9,7 @@
       <div class="cart-items-list">
         {% for item in cart %}
         <div class="cart-item">
-          <a href="{% url "products:product" slug=item.product.slug %}" class="product-card-link">
+          <a href="{% url "products:product" slug=item.product.slug %}" class="product-card-cart-link">
             {% if item.product.image %}
             <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item__image">
             {% else %}
@@ -18,7 +18,7 @@
           </a>
           <div class="cart-item__body">
             <div class="cart-item__details">
-              <a href="{% url "products:product" slug=item.product.slug %}" class="product-card-link">
+              <a href="{% url "products:product" slug=item.product.slug %}" class="product-card-cart-link">
                 <h2 class="cart-item__name">{{item.product.name}}</h2>
                 <div class="cart-item__price-info">
                   <p class="cart-item__price" id="cartItemPrice_{{ item.product.id }}">{{item.price}} ₽</p>
