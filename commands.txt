@@ -10,6 +10,7 @@ uv add django-debug-toolbar
 uv add pillow
 uv add djangorestframework
 uv add django-filter
+uv add djangorestframework-simplejwt
 
 
 django-admin startproject core .

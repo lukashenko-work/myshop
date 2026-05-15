@@ -77,90 +77,99 @@
     </aside>
 
     <section class="products-area product-grid-section">
-        <div class="search-sort-bar">
-            <div class="search-input-wrapper">
-                <input type="text" name="q" placeholder="Search" class="search-input" {% if current_q %} value="{{ current_q }}" {% endif %}>
-                <button class="search-button" aria-label="Search" type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </div>
-            <div class="sort-options">
-                <input type="hidden" id="sortById" name="sort" value="{% if current_sort %}{{ current_sort }}{% else %}new{% endif %}">
-                {% if current_sort == 'new' %}
-                <button class="sort-button active-sort" type="submit"><span>New</span></button>
-                {% else %}
-                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='new'">New</button>
-                {% endif %}
-                {% if current_sort == 'price_asc' %}
-                <button class="sort-button active-sort" type="submit"><span>Price ascending</span></button>
-                {% else %}
-                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='price_asc'">Price ascending</button>
-                {% endif %}
-                {% if current_sort == 'price_desc' %}
-                <button class="sort-button active-sort" type="submit"><span>Price descending</span></button>
-                {% else %}
-                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='price_desc'">Price descending</button>
-                {% endif %}
-                {% if current_sort == 'popular' %}
-                <button class="sort-button active-sort" type="submit"><span>Popular</span></button>
-                {% else %}
-                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='popular'">Popular</button>
-                {% endif %}
-                {% if current_sort == 'rating' %}
-                <button class="sort-button active-sort" type="submit"><span>Rating</span></button>
-                {% else %}
-                <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='rating'">Rating</button>
-                {% endif %}
-            </div>
+      <div class="search-sort-bar">
+        <div class="search-input-wrapper">
+          <input type="text" name="q" placeholder="Search" class="search-input" {% if current_q %} value="{{ current_q }}" {% endif %}>
+          <button class="search-button" aria-label="Search" type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
         </div>
+        <div class="sort-options">
+          <input type="hidden" id="sortById" name="sort" value="{% if current_sort %}{{ current_sort }}{% else %}new{% endif %}">
+          {% if current_sort == 'new' %}
+          <button class="sort-button active-sort" type="submit"><span>New</span></button>
+          {% else %}
+          <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='new'">New</button>
+          {% endif %}
+          {% if current_sort == 'price_asc' %}
+          <button class="sort-button active-sort" type="submit"><span>Price ascending</span></button>
+          {% else %}
+          <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='price_asc'">Price ascending</button>
+          {% endif %}
+          {% if current_sort == 'price_desc' %}
+          <button class="sort-button active-sort" type="submit"><span>Price descending</span></button>
+          {% else %}
+          <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='price_desc'">Price descending</button>
+          {% endif %}
+          {% if current_sort == 'popular' %}
+          <button class="sort-button active-sort" type="submit"><span>Popular</span></button>
+          {% else %}
+          <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='popular'">Popular</button>
+          {% endif %}
+          {% if current_sort == 'rating' %}
+          <button class="sort-button active-sort" type="submit"><span>Rating</span></button>
+          {% else %}
+          <button class="sort-button" type="submit" onclick="document.getElementById('sortById').value='rating'">Rating</button>
+          {% endif %}
+        </div>
+      </div>
 
-        <div class="product-grid">
-          {% for product in products %}
-          <a href="{% url "products:product" slug=product.slug %}" class="product-card-link">
-            <div class="product-card">
-              {% if product.image %}
-              <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-card__image">
-              {% else %}
-              <img src="{% static 'img/photo_coming_soon.jpg' %}" alt="Нет фото" class="product-card__image">
-              {% endif %}
-              <div class="product-card__info">
-                <h4 class="product-card__name"><span class="product-title">{{ product.name }}</span>
-                  <span class="product-rating">
-                  {% if product.avg_rating %} {{product.avg_rating|floatformat:1}}* ({{product.reviews_count}}){% else %} (Нет оценок) {% endif %}
-                  </span>
-                </h4>
-                <div class="product-card__price_info">
-                  <span class="product-card__price">{{ product.price }} ₽</span>
-                  {% if product.stock == 0 %}
-                  <span class="out-of-stock">Out of stock</span>
-                  {% else %}
-                  <span class="stock-tag">Доступно: {{ product.stock }}</span>
-                  {% endif %}
-                </div>
-                <p class="product-card__description" title="{{ product.description }}">{{ product.description }}</p>
+      <div class="product-grid">
+        {% for product in products %}
+        <a href="{% url "products:product" slug=product.slug %}" class="product-card-link">
+          <div class="product-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-card__image">
+            {% else %}
+            <img src="{% static 'img/photo_coming_soon.jpg' %}" alt="Нет фото" class="product-card__image">
+            {% endif %}
+            <div class="product-card__info">
+              <h4 class="product-card__name"><span class="product-title">{{ product.name }}</span>
+                <span class="product-rating">
+                {% if product.avg_rating %} {{product.avg_rating|floatformat:1}}* ({{product.reviews_count}}){% else %} (Нет оценок) {% endif %}
+                </span>
+              </h4>
+              <div class="product-card__price_info">
+                <span class="product-card__price">{{ product.price }} ₽</span>
+                {% if product.stock == 0 %}
+                <span class="out-of-stock">Out of stock</span>
+                {% else %}
+                <span class="stock-tag">Доступно: {{ product.stock }}</span>
+                {% endif %}
               </div>
+              <p class="product-card__description" title="{{ product.description }}">{{ product.description }}</p>
             </div>
-          </a>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% if is_paginated %}
+      <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?{{ query_string }}page={{ page_obj.previous_page_number }}" class="pagination__link pagination__link--prev">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Previous</span>
+        </a>
+        {% endif %}
+        <div class="pagination-list">
+          {% for i in page_range %}
+            {% if i == page_obj.number %}
+          <span class="pagination__link active">{{ i }}</span>
+            {% elif i == page_obj.paginator.ELLIPSIS %}
+          <span class="pagination__dots">...</span>
+            {% else %}
+          <a href="?{{ query_string }}page={{ i }}" class="pagination__link">{{ i }}</a>
+            {% endif %}
           {% endfor %}
         </div>
-
-        <div class="pagination">
-            <a href="#" class="pagination__link pagination__link--prev">
-                <i class="fa-solid fa-arrow-left"></i>
-                <span>Previous</span>
-            </a>
-            <div class="pagination-list">
-                <a href="#" class="pagination__link active">1</a>
-                <a href="#" class="pagination__link">2</a>
-                <a href="#" class="pagination__link">3</a>
-                <span class="pagination__dots">...</span>
-                <a href="#" class="pagination__link">20</a>
-            </div>
-            <a href="#" class="pagination__link pagination__link--next">
-                <span>Next</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
+        {% if page_obj.has_next %}
+        <a href="?{{ query_string }}page={{ page_obj.next_page_number }}" class="pagination__link pagination__link--next">
+          <span>Next</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        {% endif %}
+      </div>
+      {% endif %}
     </section>
   </div>
 </form>

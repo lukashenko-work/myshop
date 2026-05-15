@@ -60,17 +60,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // 2. Pagination Logic
-        const paginationList = document.querySelector('.pagination-list');
-        if (paginationList) {
-            const paginationLinks = paginationList.querySelectorAll('.pagination__link');
-            paginationLinks.forEach(link => {
-                link.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    paginationLinks.forEach(lnk => lnk.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        }
+        // const paginationList = document.querySelector('.pagination-list');
+        // if (paginationList) {
+        //     const paginationLinks = paginationList.querySelectorAll('.pagination__link');
+        //     paginationLinks.forEach(link => {
+        //         link.addEventListener('click', function(event) {
+        //             event.preventDefault();
+        //             paginationLinks.forEach(lnk => lnk.classList.remove('active'));
+        //             this.classList.add('active');
+        //         });
+        //     });
+        // }
 
         // 3. Filter Logic (Keywords and Checkboxes)
         const keywordsList = document.querySelector('.keywords-list');
@@ -114,16 +114,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Logic for Product Detail Pages (product-*.html) ---
-    const productPageContent = document.querySelector('.page-product');
-    if (productPageContent) {
-        // Accordion
-        const accordionTitle = document.querySelector('.accordion-title');
-        if (accordionTitle) {
-            accordionTitle.addEventListener('click', function() {
-                this.closest('.accordion-item').classList.toggle('active');
-            });
-        }
-        // "Add to Cart" Button and Counter
+    // const productPageContent = document.querySelector('.page-product');
+    // if (productPageContent) {
+    //     // Accordion
+    //     const accordionTitle = document.querySelector('.accordion-title');
+    //     if (accordionTitle) {
+    //         accordionTitle.addEventListener('click', function() {
+    //             this.closest('.accordion-item').classList.toggle('active');
+    //         });
+    //     }
+    //     // "Add to Cart" Button and Counter
         /*
         const cartControls = document.querySelector('.cart-controls');
         if (cartControls) {
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
             increaseBtn.addEventListener('click', function() { quantity++; updateView(); });
             updateView();
         }*/
-    }
+    // }
 
     // --- Logic for Cart Page (cart.html) ---
     // const cartPageContent = document.querySelector('.cart-page-wrapper');

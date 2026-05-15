@@ -17,7 +17,7 @@ class ProductListView(ListView):
     model = Product
     template_name = 'products/catalog.html'
     context_object_name = 'products'
-    paginate_by = 12
+    paginate_by = 3
 
     def get_queryset(self) -> QuerySet[Product]:
         qs = Product.objects.filter(is_active=True).select_related('category').annotate(
@@ -79,6 +79,15 @@ class ProductListView(ListView):
         context['min_price'] = self.request.GET.get('min_price')
         context['max_price'] = self.request.GET.get('max_price')
         context['current_stock'] = self.request.GET.get('stock')
+        paginator = context['paginator']
+        page_obj = context['page_obj']
+        # Для пагинации
+        context['page_range'] = paginator.get_elided_page_range(page_obj.number, on_each_side=1, on_ends=1)
+        # СОБИРАЕМ ВСЕ ПАРАМЕТРЫ ИЗ URL:
+        query_params = self.request.GET.copy()
+        # Сохраняем строку только если в ней есть что-то, кроме пустых полей
+        encoded_params = query_params.urlencode()
+        context['query_string'] = f"{encoded_params}&" if encoded_params else ""
         return context
 
 

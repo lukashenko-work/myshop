@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from api.serializers import (OrderCreateSerializer, OrderSerializer,
                              ProductDetailSerializer, ProductListSerializer,
-                             ReviewSerializer)
+                             ReviewSerializer, UserRegisterSerializer)
 from orders.cart import Cart
 from orders.models import Order, OrderItem
 from products.models import Product
@@ -123,7 +123,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         # 1. Проверяем, можно ли вообще отменить заказ
         if order.status in [Order.Status.DELIVERED, Order.Status.CANCELLED, Order.Status.SHIPPED, Order.Status.COMPLETED]:
             return Response(
-                {"error": f"Нельзя отменить заказ в статусе {order.status}"},
+                {'error': f'Нельзя отменить заказ в статусе {order.status}'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -139,7 +139,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             order.status = Order.Status.CANCELLED
             order.save()
 
-        return Response({"status": "Заказ успешно отменен"})
+        return Response({'status': 'Заказ успешно отменен'})
 
 
 class CartAPIView(generics.GenericAPIView):
@@ -162,7 +162,7 @@ class CartAPIView(generics.GenericAPIView):
         product_id = request.data.get('product_id')
         # 1. Проверяем обязательное поле product_id
         if not product_id:
-            raise ValidationError({"product_id": "Это поле обязательно."})
+            raise ValidationError({'product_id': 'Это поле обязательно.'})
 
         # 2. Безопасно получаем и проверяем количество
         try:
@@ -170,7 +170,7 @@ class CartAPIView(generics.GenericAPIView):
             if quantity <= 0:
                 raise ValueError
         except (TypeError, ValueError):
-            raise ValidationError({"quantity": "Количество должно быть целым положительным числом."})
+            raise ValidationError({'quantity': 'Количество должно быть целым положительным числом.'})
 
         # 3. Находим товар в базе (если не найден — вернет 404)
         product = get_object_or_404(Product, id=product_id)
@@ -178,4 +178,23 @@ class CartAPIView(generics.GenericAPIView):
         cart = Cart(request)
         cart.add(product=product, quantity=quantity)
 
-        return Response({"status": "Товар добавлен в корзину"}, status=status.HTTP_200_OK)
+        return Response({'status': 'Товар добавлен в корзину'}, status=status.HTTP_200_OK)
+
+    def delete(self, request):
+        product_id = request.data.get('product_id')
+        # 1. Проверяем обязательное поле product_id
+        if not product_id:
+            raise ValidationError({'product_id': 'Это поле обязательно.'})
+
+        # 2. Находим товар в базе (если не найден — вернет 404)
+        product = get_object_or_404(Product, id=product_id)
+
+        cart = Cart(request)
+        cart.remove(product.pk)
+
+        return Response({'status': f'Товар {product.name} удален из корзины'}, status=status.HTTP_200_OK)
+
+
+class UserRegistrationAPIView(generics.CreateAPIView):
+    serializer_class = UserRegisterSerializer
+    permission_classes = [AllowAny]

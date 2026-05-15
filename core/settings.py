@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -47,14 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-
-# Укажите имя вашего URL-паттерна для страницы логина
-LOGIN_URL = 'users:login'
-# Куда перенаправлять пользователя, если он зашел на страницу логина 
-# напрямую (а не через редирект с защищенной страницы)
-LOGIN_REDIRECT_URL = 'products:catalog'
-
 INSTALLED_APPS += [
+    'rest_framework',
     'products',
     'orders',
     'users',
@@ -133,6 +128,39 @@ AUTH_PASSWORD_VALIDATORS = [
     # },
 ]
 
+# Укажите имя вашего URL-паттерна для страницы логина
+LOGIN_URL = 'users:login'
+# Куда перенаправлять пользователя, если он зашел на страницу логина 
+# напрямую (а не через редирект с защищенной страницы)
+LOGIN_REDIRECT_URL = 'products:catalog'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedReadOnly',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': '12',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Hop & Barley API',
+    'DESCRIPTION': 'API for beer products',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKEN': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

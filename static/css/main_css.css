@@ -379,7 +379,7 @@ header {
                        /* 1 (flex-grow) - поиск растянется на всю ширину, если он один в ряду */
                            /* 0 (flex-shrink) - поиск НИКОГДА не сожмется меньше своей базы */
                            /* 300px (flex-basis) - идеальная минимальная ширина поиска */
-    min-width: 0;          /* Безопасное сжатие инпута внутри обертки */
+    min-width: 0;          /* Безопасное сжатие input внутри обертки */
 }
 
 .search-input {
@@ -685,7 +685,7 @@ footer {
 
 /* Link wrapper for product cards */
 .product-card-link {
-    min-width: 0; /* КРИТИЧЕСКИ ВАЖНО: сбрасывает min-width: auto для элемента грида */
+    min-width: 0; /* КРИТИЧЕСКИ ВАЖНО: сбрасывает min-width: auto для элемента grid */
     text-decoration: none;
     container-type: inline-size; /* Позволяет дочерним элементам реагировать на ширину карточки */
 }

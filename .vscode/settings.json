@@ -11,6 +11,7 @@
         "myshop",
         "onclick",
         "pytest",
+        "simplejwt",
         "truncatechars",
         "viewsets",
         "xmark"
