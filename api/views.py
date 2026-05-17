@@ -37,8 +37,8 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         return ProductListSerializer
 
     # api/v1/products/reviews/
-    @action(detail=True, methods=['get', 'post'], path='reviews', permission_classes=[AllowAny,])
-    def retrieve(self, request, *args, **kwargs):
+    @action(detail=True, methods=['get', 'post'], url_path='reviews', permission_classes=[AllowAny,])
+    def reviews(self, request, *args, **kwargs):
         product = self.get_object()
         if request.method == 'GET':
             reviews = Review.objects.filter(product=product)

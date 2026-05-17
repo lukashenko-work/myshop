@@ -25,7 +25,7 @@ urlpatterns = [
     path('orders/', include('orders.urls', namespace='orders')),
     # path('reviews', include('reviews.urls', namespace='reviews')),
     path('users/', include('users.urls', namespace='users')),
-    # path('api', include('api.urls'))
+    path('api/v1/', include('api.urls'))
 ]
 
 if settings.DEBUG:

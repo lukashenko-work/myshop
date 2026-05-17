@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
 INSTALLED_APPS += [
     'rest_framework',
+    'drf_spectacular',
     'products',
     'orders',
     'users',
@@ -139,7 +140,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticatedReadOnly',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': '12',
@@ -148,7 +149,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Hop & Barley API',
-    'DESCRIPTION': 'API for beer products',
+    'DESCRIPTION': 'REST API for beer products',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
