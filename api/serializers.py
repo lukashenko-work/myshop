@@ -47,6 +47,9 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         # avg_rating = obj.reviews.all().aggregate(avg=Avg('rating'))['avg']
         # return round(avg_rating, 1) if avg_rating else None
 
+    def get_reviews_count(self, obj) -> int | None:
+        return obj.reviews.count()  # Или ваша логика
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(read_only=True)
@@ -189,3 +192,15 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password']
+
+
+# для Session-based Cart:
+class CartItemSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField()
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+
+class CartSerializer(serializers.Serializer):
+    items = CartItemSerializer(many=True)
+    total_price = serializers.DecimalField(max_digits=10, decimal_places=2)

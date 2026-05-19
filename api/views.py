@@ -2,13 +2,16 @@ from django.db import transaction
 from django.db.models import F
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from rest_framework import filters, generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from api.serializers import (OrderCreateSerializer, OrderSerializer,
+from api.serializers import (CartItemSerializer, CartSerializer,
+                             OrderCreateSerializer, OrderSerializer,
                              ProductDetailSerializer, ProductListSerializer,
                              ReviewSerializer, UserRegisterSerializer)
 from orders.cart import Cart
@@ -142,7 +145,11 @@ class OrderViewSet(viewsets.ModelViewSet):
         return Response({'status': 'Заказ успешно отменен'})
 
 
-class CartAPIView(generics.GenericAPIView):
+class CartView(APIView):
+    """Работа со всей корзиной (просмотр, очистка)"""
+    serializer_class = CartSerializer  # Теперь генератор доволен
+
+    @extend_schema(summary="Получить всю корзину")
     def get(self, request):
         cart = Cart(request)
         data = []
@@ -158,6 +165,12 @@ class CartAPIView(generics.GenericAPIView):
 
         return Response({'items': data, 'total': cart.get_total_price()})
 
+
+class CartItemView(APIView):
+    """Операции с конкретным товаром в корзине"""
+    serializer_class = CartItemSerializer
+
+    @extend_schema(summary="Добавить товар в корзину")
     def post(self, request):
         product_id = request.data.get('product_id')
         # 1. Проверяем обязательное поле product_id
@@ -180,6 +193,7 @@ class CartAPIView(generics.GenericAPIView):
 
         return Response({'status': 'Товар добавлен в корзину'}, status=status.HTTP_200_OK)
 
+    @extend_schema(summary="Удалить конкретный товар из корзины")
     def delete(self, request):
         product_id = request.data.get('product_id')
         # 1. Проверяем обязательное поле product_id
